@@ -12,20 +12,20 @@ class Jugador {
 
     String? idJugador;
     String nombre;
-    String alias;
+    String nacionalidad;
     String foto;
 
     Jugador({
         this.idJugador,
         required this.nombre,
-        required this.alias,
+        required this.nacionalidad,
         required this.foto,
     });
 
     factory Jugador.fromJson(Map<String, dynamic> json) => Jugador(
         idJugador: json["idJugador"],
         nombre: json["nombre"],
-        alias: json["alias"],
+        nacionalidad: json["nacionalidad"],
         foto: json["foto"],
         
     );
@@ -33,7 +33,7 @@ class Jugador {
     Map<String, dynamic> toJson() => {
         "idJugador": idJugador,
         "nombre": nombre,
-        "alias": alias,
+        "nacionalidad": nacionalidad,
         "foto": foto,
     };
 }

@@ -4,24 +4,21 @@ import 'package:tenis_pot3/models/theme_config_model.dart';
 import 'package:http/http.dart';
 
 class ThemeConfigService {
+  final String _END_POINT =
+      "https://api-tenis-config-default-rtdb.europe-west1.firebasedatabase.app/Tema";
 
+  Future<TemaConfig?> getTema(String key) async {
+    final uri = Uri.parse('$_END_POINT/$key.json');
 
-  String _END_POINT = "https://api-tenis-config-default-rtdb.europe-west1.firebasedatabase.app/Tema";
-
-  Future<TemaConfig?> getTema(String menu) async {
-    TemaConfig temaConfig;
-
-    Uri uri = Uri.parse('${_END_POINT}/${menu}.json');
-
-    Response response = await get(uri);
+    final response = await get(uri);
 
     if (response.statusCode != 200) return null;
 
-    Map<String, dynamic> json = jsonDecode(response.body);
+    if (response.body == 'null') return null;
 
-    temaConfig = TemaConfig.fromJson(json);
+    final Map<String, dynamic> jsonMap =
+        jsonDecode(response.body) as Map<String, dynamic>;
 
-    return temaConfig;
-
+    return TemaConfig.fromJson(jsonMap);
   }
 }

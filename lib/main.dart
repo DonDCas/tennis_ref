@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:tenis_pot3/presentations/screens/home_screen.dart';
 import 'package:tenis_pot3/routes/app_routes.dart';
 
 void main() {
@@ -14,7 +13,6 @@ class MainApp extends StatelessWidget {
     return MaterialApp.router(
       debugShowCheckedModeBanner: false,
       routerConfig: appRouter,
-        
     );
   }
 }

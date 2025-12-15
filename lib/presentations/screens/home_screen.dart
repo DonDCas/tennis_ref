@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:lottie/lottie.dart';
 import 'package:tenis_pot3/Utils/utils.dart';
 import 'package:tenis_pot3/models/theme_config_model.dart';
 import 'package:tenis_pot3/services/theme_config_service.dart';
@@ -23,6 +24,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
   void cargarTema() async {
     final data = await themeConfigService.getTema("menu");
+    await Future.delayed(Duration(seconds: 2));
     setState(() {
       tema = data;
     });
@@ -30,10 +32,8 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: tema == null
-      ? Colors.white 
-      : Color(Utils.parseHex(tema!.primaryColor)),
-      body: Stack(
+      backgroundColor: (tema == null ) ? Colors.white : Color(Utils.parseHex(tema!.primaryColor)),
+      body: (tema == null) ? Center(child: Image.asset("assets/gif/Tennis_Ball.gif"),) : Stack(
         children: [
           Center(
             child: Column(
