@@ -54,7 +54,7 @@ class _HistorialScreenState extends State<HistorialScreen> {
     if (tema == null) return Scaffold( body: Center(child:Center(child: Image.asset("assets/gif/Tennis_Ball.gif"),)),);
     return Scaffold(
       backgroundColor: (tema == null) ? Colors.white : Color(Utils.parseHex(tema!.primaryColor)),
-      body: Padding(
+      body: Placeholder() /* Padding(
         padding: EdgeInsets.all(30),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -174,11 +174,11 @@ class _HistorialScreenState extends State<HistorialScreen> {
             )
           ],
         ),
-      ),
+      ), */
     );
   }
 }
-
+/* 
 Widget resultado(Jugador ganador, Partido partido, String fontFamily, Color color, int numSet) {
   return Text ((ganador.idJugador == partido.equipo1.idJugador) 
     ? '${partido.sets_e1[numSet]} - ${partido.sets_e2[numSet]}'
@@ -217,4 +217,4 @@ Widget headerCell(String texto, Color color, String fontFamily ){
       ),
     )
   );
-}
+} */

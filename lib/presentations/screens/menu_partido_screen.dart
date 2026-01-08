@@ -8,15 +8,15 @@ import 'package:tenis_pot3/models/theme_config_model.dart';
 import 'package:tenis_pot3/services/auth_service.dart';
 import 'package:tenis_pot3/services/theme_config_service.dart';
 
-class HomeScreen extends StatefulWidget {
+class MenuPartidoScreen extends StatefulWidget {
   late TemaConfig temaConfig;
-  HomeScreen({super.key, required TemaConfig this.temaConfig});
+  MenuPartidoScreen({super.key, required TemaConfig this.temaConfig});
 
   @override
-  State<HomeScreen> createState() => _HomeScreenState();
+  State<MenuPartidoScreen> createState() => _MenuPartidoScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class _MenuPartidoScreenState extends State<MenuPartidoScreen> {
   
   @override
   Widget build(BuildContext context) {
@@ -38,21 +38,21 @@ class _HomeScreenState extends State<HomeScreen> {
                   children: [
                     SizedBox(height: 80,),
                     Container(
-                      width: 260,
+                      width: 350,
                       height: 55,
                       child: ElevatedButton(
                         onPressed: (){
-                          context.go("/menupartido", extra: tema);
+                          context.go("/menupartido");
                         }, 
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: Color(Utils.parseHex(tema.neonColor)),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(tema.borderRadius.toDouble()),
+                            backgroundColor: Color(Utils.parseHex(tema.neonColor)),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(tema.borderRadius.toDouble()),
+                            ),
+                            textStyle: TextStyle(letterSpacing: 1.5),
                           ),
-                          textStyle: TextStyle(letterSpacing: 1.5),
-                        ),
                         child: Text(
-                          "NUEVO PARTIDO",
+                          "EMPEZAR PARTIDO OFICIAL",
                           style: GoogleFonts.getFont(
                             tema.fontFamily,
                             color: Color(Utils.parseHex(tema.buttonColor)),
@@ -64,13 +64,13 @@ class _HomeScreenState extends State<HomeScreen> {
                     ).fadeInRight(),
                     SizedBox(height: 20,),
                     Container(
-                      width: 260,
+                      width: 350,
                       height: 55,
                       child: ElevatedButton(
                         onPressed: (){
-                          context.go("/historial");
+                          context.go("/splashamistoso", extra: tema);
                         }, 
-                        style: ElevatedButton.styleFrom(
+                      style: ElevatedButton.styleFrom(
                           backgroundColor: Color(Utils.parseHex(tema.neonColor)),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(tema.borderRadius.toDouble()),
@@ -78,7 +78,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           textStyle: TextStyle(letterSpacing: 1.5)
                         ),
                         child: Text(
-                          "HISTORIAL",
+                          "PARTIDO AMISTOSO",
                           style: GoogleFonts.getFont(
                             tema.fontFamily,
                             color: Color(Utils.parseHex(tema.buttonColor)),
@@ -90,14 +90,12 @@ class _HomeScreenState extends State<HomeScreen> {
                     ).fadeInRight(duration: Duration(milliseconds: 1000)),
                     SizedBox(height: 20,),
                     Container(
-                      width: 260,
+                      width: 350,
                       height: 55,
                       child: ElevatedButton(
                         onPressed: (){
-                          AuthService authService = AuthService();
-                          authService.logout();
-                          context.go("/");
-                        }, 
+                          context.go("/home");
+                        },                           
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Color(Utils.parseHex(tema.neonColor)),
                           shape: RoundedRectangleBorder(
@@ -106,7 +104,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           textStyle: TextStyle(letterSpacing: 1.5)
                         ),
                         child: Text(
-                          "CERRAR SESIÓN",
+                          "CONTINUAR PARTIDO",
                           style: GoogleFonts.getFont(
                             tema.fontFamily,
                             color: Color(Utils.parseHex(tema.buttonColor)),
@@ -116,6 +114,32 @@ class _HomeScreenState extends State<HomeScreen> {
                         )
                       ),
                     ).fadeInRight(duration: Duration(milliseconds: 1200)),
+                    SizedBox(height: 20,),
+                    Container(
+                      width: 350,
+                      height: 55,
+                      child: ElevatedButton(
+                        onPressed: (){
+                          context.go("/home", extra: tema);
+                        }, 
+                        style: ElevatedButton.styleFrom(
+                            backgroundColor: Color(Utils.parseHex(tema.neonColor)),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(tema.borderRadius.toDouble()),
+                            ),
+                            textStyle: TextStyle(letterSpacing: 1.5)
+                          ),
+                        child: Text(
+                          "ATRAS",
+                          style: GoogleFonts.getFont(
+                            tema.fontFamily,
+                            color: Color(Utils.parseHex(tema.buttonColor)),
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        )
+                      ),
+                    ).fadeInRight(duration: Duration(milliseconds: 1400)),
                     SizedBox(height: 80,),
                   ],
                 ),

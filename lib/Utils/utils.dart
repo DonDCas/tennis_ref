@@ -1,7 +1,7 @@
 class Utils {
-  static int parseHex(String numHex) {
+  static int parseHex(String numHex, {String transparencia = 'FF'}) {
     String hexColor = numHex.replaceAll("#", "");
-    return int.parse('FF$hexColor', radix: 16);
+    return int.parse('$transparencia$hexColor', radix: 16);
   }
 
   //Metodo que transforma un String que contenga una fecha en un DateTime obviando las horas

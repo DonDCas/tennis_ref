@@ -18,7 +18,7 @@ class FinalPartido extends StatefulWidget {
 }
 
 class _FinalPartidoState extends State<FinalPartido> {
-  TemaConfig? tema;
+ /*  TemaConfig? tema;
   ThemeConfigService temaService = ThemeConfigService();
   JugadorService jugadorService = JugadorService();
   Jugador? ganador;
@@ -50,15 +50,15 @@ class _FinalPartidoState extends State<FinalPartido> {
       ganador = g;
       perdedor = p;
     });
-  }
+  } */
   @override
   Widget build(BuildContext context) {
-    Partido partido = widget.partido;
-    if (ganador == null || perdedor == null) return Scaffold (body: Center(child: Image.asset("assets/gif/Tennis_Ball.gif"),),);
+   /*  Partido partido = widget.partido;
+    if (ganador == null || perdedor == null) return Scaffold (body: Center(child: Image.asset("assets/gif/Tennis_Ball.gif"),),); */
     return Scaffold(
-      backgroundColor: (tema == null) ? Colors.white : Color(Utils.parseHex(tema!.primaryColor)),      
+      backgroundColor: Colors.black, /* (tema == null) ? Colors.white : Color(Utils.parseHex(tema!.primaryColor)),       */
       body: Center(
-        child: Padding(
+        child: Placeholder() /* Padding(
           padding: const EdgeInsets.all(12.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
@@ -210,12 +210,12 @@ class _FinalPartidoState extends State<FinalPartido> {
               ),
             ],
           ),
-        ),
+        ), */
       ) 
     );
   }
 }
-
+/* 
 class AvatarJugador extends StatelessWidget {
   const AvatarJugador({
     super.key,
@@ -306,4 +306,4 @@ class _ResultadoPerdedor extends StatelessWidget {
       fontSize: 15
     ),);
   }
-}
+} */

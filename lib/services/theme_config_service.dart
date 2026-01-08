@@ -12,8 +12,6 @@ class ThemeConfigService {
 
     final response = await get(uri);
 
-    if (response.statusCode != 200) return null;
-
     if (response.body == 'null') return null;
 
     final Map<String, dynamic> jsonMap =

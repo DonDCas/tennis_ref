@@ -49,11 +49,11 @@ class _PuntuacionesWidgetState extends State<PuntuacionesWidget> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            _Cabecera(widget.tema),
+            /* _Cabecera(widget.tema),
             const SizedBox(height: 6),
             _divisor(widget.tema, context),
             _Fila(widget.tema, '${widget.jugador1!.nombre}', widget.partido.sets_e1, (widget.partido.isTieBreak!)? widget.partido.equipo1.puntos.toString() :appController.conversor(widget.partido.equipo1.puntos)),
-            _Fila(widget.tema, "${widget.jugador2!.nombre}", widget.partido.sets_e2, (widget.partido.isTieBreak!)? widget.partido.equipo2.puntos.toString() :appController.conversor(widget.partido.equipo2.puntos)),
+            _Fila(widget.tema, "${widget.jugador2!.nombre}", widget.partido.sets_e2, (widget.partido.isTieBreak!)? widget.partido.equipo2.puntos.toString() :appController.conversor(widget.partido.equipo2.puntos)), */
           ],
         ),
       ),

@@ -66,7 +66,7 @@ class _PartidoScreenState extends State<PartidoScreen> {
     return Scaffold(
       backgroundColor: (tema == null) ? Colors.white : Color(Utils.parseHex(tema!.primaryColor)),      
       body: (jugador2 == null) ? Center(child: Image.asset("assets/gif/Tennis_Ball.gif"),) 
-      : Padding(
+      : Placeholder()/* Padding(
         padding: const EdgeInsets.all(15.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -319,7 +319,7 @@ class _PartidoScreenState extends State<PartidoScreen> {
            )
           ],
         ),
-      ),
+      ), */
     );
   } 
 }
