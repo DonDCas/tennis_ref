@@ -16,21 +16,15 @@ final appRouter = GoRouter(
   routes: [
     GoRoute(
       path: '/',
-      builder: (context, state) => const SplashInicio(),
+      builder: (context, state) => SplashInicial() 
     ),
     GoRoute(
       path: '/login',
-      builder: (context, state){
-        final temaMenu = state.extra as TemaConfig;
-        return LoginScreen(temaConfig: temaMenu);
-      }
+      builder: (context, state) => LoginScreen()
     ),
     GoRoute(
       path: '/home',
-      builder: (context, state){
-        final temaMenu = state.extra as TemaConfig;
-        return HomeScreen(temaConfig: temaMenu );
-      }
+      builder: (context, state) => HomeScreen()
     ),
     GoRoute(
       path: '/menupartido',
@@ -48,24 +42,22 @@ final appRouter = GoRouter(
     ),
     GoRoute(
       path: '/selectjugadores',
-      builder: (context, state){
-        final args = state.extra as Map<String, dynamic>;
-        return SelectJugadoresScreen(
-          temaConfig: args['tema'],
-          jugadores: args['jugadores']
-          );
-        },
+      builder: (context, state) => SelectJugadoresScreen()
     ),
-    GoRoute(
+    /* GoRoute(
       path: '/partido',
       builder: (context, state) => PartidoScreen(),
-    ),
+    ), */
     GoRoute(
       path: '/finPartido',
       builder: (context, state){
         final partidoFinalizado = state.extra as Partido;
         return FinalPartido(partido: partidoFinalizado,);
       } 
+    ),
+    GoRoute(
+      path: '/historialSplash',
+      builder: (context, state) => HistorialSplash(),
     ),
     GoRoute(
       path: '/historial',

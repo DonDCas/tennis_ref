@@ -3,24 +3,20 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lottie/lottie.dart';
+import 'package:provider/provider.dart';
 import 'package:tenis_pot3/Utils/utils.dart';
 import 'package:tenis_pot3/models/theme_config_model.dart';
+import 'package:tenis_pot3/providers/tema_provider.dart';
 import 'package:tenis_pot3/services/auth_service.dart';
 import 'package:tenis_pot3/services/theme_config_service.dart';
 
-class HomeScreen extends StatefulWidget {
-  late TemaConfig temaConfig;
-  HomeScreen({super.key, required TemaConfig this.temaConfig});
 
-  @override
-  State<HomeScreen> createState() => _HomeScreenState();
-}
+class HomeScreen extends StatelessWidget {
+  const HomeScreen({super.key});
 
-class _HomeScreenState extends State<HomeScreen> {
-  
   @override
   Widget build(BuildContext context) {
-    TemaConfig tema = widget.temaConfig;
+    TemaConfig tema = Provider.of<TemaProvider>(context).temaMenu!;
     return Scaffold(
       backgroundColor: Color(Utils.parseHex(tema.primaryColor)),
       body:SafeArea(
@@ -68,7 +64,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       height: 55,
                       child: ElevatedButton(
                         onPressed: (){
-                          context.go("/historial");
+                          context.go("/historialSplash");
                         }, 
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Color(Utils.parseHex(tema.neonColor)),
@@ -107,8 +103,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         ),
                         child: Text(
                           "CERRAR SESIÓN",
-                          style: GoogleFonts.getFont(
-                            tema.fontFamily,
+                          style: TextStyle(
                             color: Color(Utils.parseHex(tema.buttonColor)),
                             fontSize: 16,
                             fontWeight: FontWeight.bold,

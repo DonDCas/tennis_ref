@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
 import 'package:tenis_pot3/Utils/utils.dart';
 import 'package:tenis_pot3/models/theme_config_model.dart';
+import 'package:tenis_pot3/providers/tema_provider.dart';
 import 'package:tenis_pot3/services/auth_service.dart';
 
 class LoginScreen extends StatefulWidget {
-  late TemaConfig temaConfig;
-  LoginScreen({super.key, required TemaConfig this.temaConfig});
+    
+  LoginScreen({super.key});
 
   @override
   State<LoginScreen> createState() => _LoginScreenState();
@@ -25,7 +26,8 @@ class _LoginScreenState extends State<LoginScreen> {
   }
   @override
   Widget build(BuildContext context) {
-    TemaConfig tema = widget.temaConfig;
+    final temaProvider = Provider.of<TemaProvider>(context);
+    TemaConfig tema = temaProvider.temaMenu!;
     return Scaffold(
       backgroundColor: Color(Utils.parseHex(tema.primaryColor)),
       body: SafeArea(
@@ -60,32 +62,9 @@ class _LoginScreenState extends State<LoginScreen> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Container(
-                    alignment: Alignment.center,
-                    width: 250,
-                    height: 75,
-                    decoration: BoxDecoration(
-                    color: Color(Utils.parseHex(tema.buttonColor)),
-                      border: Border(
-                        bottom: BorderSide(
-                          color: Color(Utils.parseHex(tema.neonColor)),
-                          width: 5
-                        )
-                      ),
-                      borderRadius: BorderRadius.all(Radius.circular(tema.borderRadius.toDouble()))
-                    ),
-                    child: Text(
-                      "Registrarse",
-                      style: GoogleFonts.getFont(
-                        tema.fontFamily,
-                        color: Color(Utils.parseHex(tema.neonColor))
-                      )
-                    )
-                  ),
-                  SizedBox(width: 40,),
                   GestureDetector(
                     onTap: () async{
-                      final user = userController.text.trim();
+                      final user = userController.text.trim().toLowerCase();
                       final pass = passController.text.trim();
                       if (user.isEmpty || pass.isEmpty){
                         ScaffoldMessenger.of(context).showSnackBar(
@@ -108,10 +87,10 @@ class _LoginScreenState extends State<LoginScreen> {
                       width: 250,
                       height: 75,
                       decoration: BoxDecoration(
-                      color: Color(Utils.parseHex(tema.neonColor)),
+                      color: Color(Utils.parseHex(tema.buttonColor)),
                         border: Border(
                           bottom: BorderSide(
-                            color: Colors.white,//Color(Utils.parseHex(tema.buttonColor)),
+                            color: Colors.white,
                             width: 5
                           )
                         ),
@@ -119,9 +98,8 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                       child: Text(
                         "Inciar Sesión",
-                        style: GoogleFonts.getFont(
-                          tema.fontFamily,
-                          color: Color(Utils.parseHex(tema.textColor))
+                        style: TextStyle(
+                          color: Color(Utils.parseHex(tema.neonColor))
                         )
                       )
                     ),
@@ -143,8 +121,7 @@ class _LoginScreenState extends State<LoginScreen> {
           SizedBox(width: 6),
           Text(
             textoLabel,
-            style: GoogleFonts.getFont(
-              tema.fontFamily,
+            style: TextStyle(
               color: Color(Utils.parseHex(tema.textColor))
             ),
           ),
@@ -160,6 +137,7 @@ class _LoginScreenState extends State<LoginScreen> {
       ),
       child: TextField(
         controller: controller,
+        cursorOpacityAnimates: false,
         obscureText: obscure,
         decoration: InputDecoration(
           label: textLabel,

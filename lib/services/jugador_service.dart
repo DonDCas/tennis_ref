@@ -5,7 +5,7 @@ import 'package:tenis_pot3/models/jugador_model.dart';
 import 'package:uuid/uuid.dart';
 
 
-final String _ENDPOINT_BASE = "http://10.0.2.2:8000/api/v1/jugadores/";
+final String _ENDPOINT_BASE = "http://api-tenis.duckdns.org/api/v1/jugadores/";
 
 class JugadorService {
 

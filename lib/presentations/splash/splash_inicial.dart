@@ -1,38 +1,81 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:tenis_pot3/models/theme_config_model.dart';
-import 'package:tenis_pot3/services/theme_config_service.dart';
+import 'package:provider/provider.dart';
+import 'package:tenis_pot3/providers/tema_provider.dart';
+import 'package:tenis_pot3/services/auth_service.dart';
 
-class SplashInicio extends StatefulWidget {
-  const SplashInicio({super.key});
+class SplashInicial extends StatefulWidget {
+
+  const SplashInicial({super.key});
 
   @override
-  State<SplashInicio> createState() => _SplashInicioState();
+  State<SplashInicial> createState() => _SplashInicialState();
 }
 
-class _SplashInicioState extends State<SplashInicio> {
-  TemaConfig? tema = null;
-  ThemeConfigService temaService = ThemeConfigService();
+class _SplashInicialState extends State<SplashInicial> {
+
   @override
   void initState() {
-    cargarTema();
+    super.initState();
+    _iniciarCarga();
+  }
+
+  Future<void> _iniciarCarga() async {
+    final temaProvider = Provider.of<TemaProvider>(context, listen: false);
+    
+    // Esperamos a que la lógica del provider (con sus delays) termine
+    await temaProvider.getTemaMenu();
+    await temaProvider.getTemaMarcador();
+
+    if (mounted) {
+      
+      print('Tema cargado');
+      chequeoAuth(context);
+    }
+  }
+
+  @override
+  void dispose() {
+    // Al navegar con .go, este método se dispara garantizando que el GIF muere
+    print("Recursos del Splash liberados");
+    super.dispose();
   }
   @override
   Widget build(BuildContext context) {
-    if (tema == null) return Scaffold(body:Center(child: Image.asset("assets/gif/Tennis_Ball.gif"),));
-    return Scaffold(body: Center(child: Image.asset("assets/gif/Tennis_Ball.gif"),));
+    print('Splash inicial');
+    final temaProvider = Provider.of<TemaProvider>(context, listen: false);
+    print('Cargamos tema');
+    if (!temaProvider.isLoading){
+    
+    } 
+    print('Estamos cargando tema');
+    return Scaffold(
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Image.asset('assets/gif/Tennis_Ball.gif'),
+            Text(
+              'Cargando Datos',
+              style: TextStyle(
+                fontWeight: FontWeight.bold, 
+                fontSize: 20
+              )              
+            ),
+          ],
+        ),
+      )
+    );
   }
-
-  void cargarTema() async{
-    final data = await temaService.getTema("menu");
-    setState(() {
-      if (data != null){
-        setState(() async{
-          tema = data;
-          await Future.delayed(Duration(seconds: 10));
-          context.go("/login", extra: tema);
-        });
-      }
-    });
+  
+  void chequeoAuth(BuildContext context) async{
+    print('chequeando ...');
+    AuthService auth = AuthService();
+    bool logueado = await auth.estaLogueado();
+    if (logueado){
+      context.go('/home');
+    }else{
+      context.go('/login');
+    }
   }
 }

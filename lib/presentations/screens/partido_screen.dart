@@ -1,4 +1,4 @@
-import 'dart:math';
+/* import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_glow/flutter_glow.dart';
@@ -425,3 +425,4 @@ class AvatarJugador extends StatelessWidget {
   }
 }
 
+ */

@@ -42,7 +42,7 @@ class TemaConfig {
         neonColor: json["neonColor"],
         primaryColor: json["primaryColor"],
         tableRowColor: json["tableRowColor"],
-        textColor: json["textColor"],
+        textColor: json["textColor"].toString(),
         gridColor: json["gridColor"],
     );
 

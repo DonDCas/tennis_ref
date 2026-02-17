@@ -9,12 +9,18 @@ class ThemeConfigService {
 
   Future<TemaConfig?> getTema(String key) async {
     final uri = Uri.parse('$_END_POINT/$key.json');
+    print("Caca");
+    print(uri);
+
 
     final response = await get(uri);
 
+    print(response.body);
+
     if (response.body == 'null') return null;
 
-    final Map<String, dynamic> jsonMap =
+    final Map<String, dynamic> 
+    jsonMap =
         jsonDecode(response.body) as Map<String, dynamic>;
 
     return TemaConfig.fromJson(jsonMap);

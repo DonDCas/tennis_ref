@@ -68,7 +68,7 @@ class _MenuPartidoScreenState extends State<MenuPartidoScreen> {
                       height: 55,
                       child: ElevatedButton(
                         onPressed: (){
-                          context.go("/splashamistoso", extra: tema);
+                          context.go("/selectjugadores", extra: tema);
                         }, 
                       style: ElevatedButton.styleFrom(
                           backgroundColor: Color(Utils.parseHex(tema.neonColor)),

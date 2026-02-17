@@ -3,7 +3,7 @@ import 'package:http/http.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class AuthService {
-  String _URL_ENDPOINT = 'http://10.0.2.2:8000/api/v1';
+  String _URL_ENDPOINT = 'https://api-tenis.duckdns.org/api/v1';
   final _storage = const FlutterSecureStorage();
 
   Future<bool> login(String user, String pass) async{
@@ -16,8 +16,6 @@ class AuthService {
         'password' : pass,
       }),
     );
-    print("Hola");
-    print(response.statusCode);
     if(response.statusCode != 200) return false;
 
     final data = jsonDecode(response.body);
@@ -34,5 +32,12 @@ class AuthService {
 
   Future<String?> getAccessToken() async{
     return await _storage.read(key: 'accessToken');
+  }
+
+  Future<bool> estaLogueado() async{
+    String? token = await getAccessToken();
+    if (token == null) return false;
+
+    return token.isNotEmpty;
   }
 }
