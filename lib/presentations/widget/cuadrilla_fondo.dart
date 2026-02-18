@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:tenis_pot3/models/theme_config_model.dart';
-import 'package:tenis_pot3/services/theme_config_service.dart';
+import 'package:tennis_ref/models/theme_config_model.dart';
+import 'package:tennis_ref/services/theme_config_service.dart';
 
 class cuadrillaFondo extends StatefulWidget {
   const cuadrillaFondo({super.key});

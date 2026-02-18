@@ -2,15 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
-import 'package:tenis_pot3/Utils/utils.dart';
-import 'package:tenis_pot3/models/jugador_model.dart';
-import 'package:tenis_pot3/models/partido_model.dart';
-import 'package:tenis_pot3/models/theme_config_model.dart';
-import 'package:tenis_pot3/providers/partido_provider.dart';
-import 'package:tenis_pot3/providers/tema_provider.dart';
-import 'package:tenis_pot3/services/jugador_service.dart';
-import 'package:tenis_pot3/services/partido_service.dart';
-import 'package:tenis_pot3/services/theme_config_service.dart';
+import 'package:tennis_ref/Utils/utils.dart';
+import 'package:tennis_ref/models/jugador_model.dart';
+import 'package:tennis_ref/models/partido_model.dart';
+import 'package:tennis_ref/models/theme_config_model.dart';
+import 'package:tennis_ref/providers/partido_provider.dart';
+import 'package:tennis_ref/providers/tema_provider.dart';
+import 'package:tennis_ref/services/jugador_service.dart';
+import 'package:tennis_ref/services/partido_service.dart';
+import 'package:tennis_ref/services/theme_config_service.dart';
 
 class HistorialSplash extends StatefulWidget {
   const HistorialSplash({super.key});
@@ -23,9 +23,9 @@ class _HistorialSplashState extends State<HistorialSplash> {
   @override
   Widget build(BuildContext context) {
     TemaConfig tema = Provider.of<TemaProvider>(context).temaMarcador;
+    final partidoProvider = Provider.of<PartidoProvider>(context, listen: false);
 
     Future.microtask(() async {
-      final partidoProvider = Provider.of<PartidoProvider>(context, listen: false);
       
       await partidoProvider.getAllPatidos();
 

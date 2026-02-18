@@ -1,11 +1,10 @@
 import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
-import 'package:tenis_pot3/Utils/utils.dart';
-import 'package:tenis_pot3/models/theme_config_model.dart';
-import 'package:tenis_pot3/providers/tema_provider.dart';
+import 'package:tennis_ref/Utils/utils.dart';
+import 'package:tennis_ref/models/theme_config_model.dart';
+import 'package:tennis_ref/providers/tema_provider.dart';
 
 class MenuPartidoScreen extends StatelessWidget {
   const MenuPartidoScreen({super.key});
@@ -13,7 +12,7 @@ class MenuPartidoScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     TemaConfig? tema = Provider.of<TemaProvider>(context).temaMenu;
-    ;
+    
     return Scaffold(
       backgroundColor: Color(Utils.parseHex(tema!.primaryColor)),
       body:SafeArea(
@@ -34,9 +33,9 @@ class MenuPartidoScreen extends StatelessWidget {
                     SizedBox(height: 20,),
                     botonNavegacion('CONTINUAR PARTIDO', tema, ()=> context.go('/home'), Duration(milliseconds: 1200)),
                     SizedBox(height: 20,),
-                    botonNavegacion('PARTIDO AMISTOSO', tema, ()=> context.go('/selectjugadores'), Duration(milliseconds: 1000)),
+                    botonNavegacion('PARTIDO AMISTOSO', tema, ()=> context.go('/selectjugadores'), Duration(milliseconds: 1400)),
                     SizedBox(height: 20,),
-                    botonNavegacion('ATRAS', tema, ()=> context.go('/home'), Duration(milliseconds: 1400)),
+                    botonNavegacion('ATRAS', tema, ()=> context.go('/home'), Duration(milliseconds: 1600)),
                     SizedBox(height: 80,),
                   ],
                 ),

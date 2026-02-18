@@ -4,7 +4,7 @@
 
 import 'dart:convert';
 
-import 'package:tenis_pot3/models/jugador_model.dart';
+import 'package:tennis_ref/models/jugador_model.dart';
 
 JugadorResponse jugadorResponseFromJson(String str) => JugadorResponse.fromJson(json.decode(str));
 
@@ -12,7 +12,7 @@ String jugadorResponseToJson(JugadorResponse data) => json.encode(data.toJson())
 
 class JugadorResponse {
     int count;
-    String next;
+    String? next;
     dynamic previous;
     List<Jugador> results;
 
@@ -25,7 +25,7 @@ class JugadorResponse {
 
     factory JugadorResponse.fromJson(Map<String, dynamic> json) => JugadorResponse(
         count: json["count"],
-        next: json["next"],
+        next: json["next"] ?? '',
         previous: json["previous"],
         results: List<Jugador>.from(json["results"].map((x) => Jugador.fromJson(x))),
     );

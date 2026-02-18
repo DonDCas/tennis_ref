@@ -3,7 +3,9 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:tenis_pot3/services/jugador_service.dart';
+import 'package:provider/provider.dart';
+import 'package:tennis_ref/models/jugador_model.dart';
+import 'package:tennis_ref/providers/jugador_provider.dart';
 import 'package:intl/intl.dart';
 
 
@@ -85,8 +87,7 @@ class _CrearJugadorSheetState extends State<CrearJugadorSheet> {
                 children: [
                   Text(
                     'Mano Dominante',
-                    style: GoogleFonts.getFont(
-                      'Orbitron',
+                    style: TextStyle(
                       fontWeight: FontWeight.bold
                     ),
                   ),
@@ -94,21 +95,21 @@ class _CrearJugadorSheetState extends State<CrearJugadorSheet> {
                     title: Text('Derecha'),
                     value: 'D',
                     groupValue: _mDominante,
-                    onChanged: (value){
+                    onChanged:(value) {
                       setState(() {
                         _mDominante = value;
                       });
-                    }
+                    },
                   ),
                   RadioListTile<String>(
                     title: Text('Izquierda'),
                     value: 'Z',
                     groupValue: _mDominante,
-                    onChanged: (value){
+                    onChanged:(value) {
                       setState(() {
                         _mDominante = value;
                       });
-                    }
+                    },
                   ),
                 ],
               ),
@@ -154,30 +155,36 @@ class _CrearJugadorSheetState extends State<CrearJugadorSheet> {
       )
     );
   }
+  
   void _guardar() async {
-    if (!_formKey.currentState!.validate()) return;
+  if (!_formKey.currentState!.validate()) return;
+  if (_image == null) {
+    // Mostrar snackbar: falta la foto
+    return;
+  }
 
-    if (_mDominante == null){
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Selecciona la mano dominante')),
-      );
-      return;
-    }
-    final jugadorService  = JugadorService();
-
-    final jugador = await jugadorService.crearJugador(
+  // Creamos el objeto temporal (el ID y fechas se ignorarán al enviar)
+  Jugador tempJugador = Jugador(
       nombreCompleto: _nombreController.text,
       pais: _nacionalidadController.text,
-      fechaNacimiento: _fechaNacimiento!.toIso8601String(),
+      bandera: '',
+      fechaNacimiento: _fechaNacimiento!,
       rankingAtp: 0,
       mejorRanking: 0,
-      manoDominante: _mDominante!,
-      image: _image,
+      manoDominante: _mDominante!, // Tu Enum convertido a String
+      foto: '', // Se llenará con el archivo
+      creacion: DateTime.now(),
+      actualizacion: DateTime.now(),
     );
-    if (jugador != null){
-      Navigator.pop(context, jugador);
+
+    final provider = Provider.of<JugadorProvider>(context, listen: false);
+    final resultado = await provider.crearJugador(tempJugador, _image!);
+
+    if (resultado != null) {
+      Navigator.pop(context, resultado);
     }
   }
+
   Future<void> _seleccionarFecha(BuildContext context) async {
     final fecha = await showDatePicker(
       context: context,
@@ -194,7 +201,7 @@ class _CrearJugadorSheetState extends State<CrearJugadorSheet> {
 
   Future<void> pickImage() async{
     final XFile? image = await _picker.pickImage(
-      source: ImageSource.gallery,
+      source: ImageSource.camera,
       imageQuality: 80,
     );
     if (image != null){

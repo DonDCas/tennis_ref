@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:tenis_pot3/models/theme_config_model.dart';
+import 'package:tennis_ref/models/theme_config_model.dart';
 import 'package:http/http.dart';
 
 class ThemeConfigService {

@@ -4,7 +4,7 @@
 
 import 'dart:convert';
 
-import 'package:tenis_pot3/models/partido_model.dart';
+import 'package:tennis_ref/models/partido_model.dart';
 
 PartidoResponse partidoResponseFromJson(String str) => PartidoResponse.fromJson(json.decode(str));
 

@@ -1,6 +1,6 @@
 import 'dart:convert';
 import 'package:http/http.dart';
-import 'package:tenis_pot3/models/partido_model.dart';
+import 'package:tennis_ref/models/partido_model.dart';
 
 final String _ENDPOINT_BASE = "https://api-tenis-03vs.onrender.com/api/v1/Game/";
 

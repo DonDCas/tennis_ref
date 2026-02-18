@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:tenis_pot3/providers/jugador_provider.dart';
-import 'package:tenis_pot3/providers/partido_provider.dart';
-import 'package:tenis_pot3/providers/tema_provider.dart';
-import 'package:tenis_pot3/routes/app_routes.dart';
-import 'package:tenis_pot3/theme/app_theme.dart';
+import 'package:tennis_ref/providers/jugador_provider.dart';
+import 'package:tennis_ref/providers/partido_provider.dart';
+import 'package:tennis_ref/providers/tema_provider.dart';
+import 'package:tennis_ref/routes/app_routes.dart';
+import 'package:tennis_ref/theme/app_theme.dart';
 
 void main() {
   runApp(AppState());

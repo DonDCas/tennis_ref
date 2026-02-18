@@ -1,15 +1,16 @@
 import 'package:go_router/go_router.dart';
-import 'package:tenis_pot3/models/partido_model.dart';
-import 'package:tenis_pot3/models/theme_config_model.dart';
-import 'package:tenis_pot3/presentations/screens/Select_Jugadores_Screen.dart';
-import 'package:tenis_pot3/presentations/screens/final_partido.dart';
-import 'package:tenis_pot3/presentations/screens/historial_screen.dart';
-import 'package:tenis_pot3/presentations/screens/home_screen.dart';
-import 'package:tenis_pot3/presentations/screens/login_screen.dart';
-import 'package:tenis_pot3/presentations/screens/menu_partido_screen.dart';
-import 'package:tenis_pot3/presentations/screens/partido_screen.dart';
-import 'package:tenis_pot3/presentations/splash/splash_inicial.dart';
-import 'package:tenis_pot3/presentations/splash/splash_jugadores_amistoso.dart';
+import 'package:tennis_ref/models/partido_model.dart';
+import 'package:tennis_ref/models/theme_config_model.dart';
+import 'package:tennis_ref/presentations/screens/select_jugadores_screen.dart';
+import 'package:tennis_ref/presentations/screens/final_partido.dart';
+import 'package:tennis_ref/presentations/screens/historial_screen.dart';
+import 'package:tennis_ref/presentations/screens/home_screen.dart';
+import 'package:tennis_ref/presentations/screens/login_screen.dart';
+import 'package:tennis_ref/presentations/screens/menu_partido_screen.dart';
+import 'package:tennis_ref/presentations/screens/partido_screen.dart';
+import 'package:tennis_ref/presentations/splash/splash_CargaPartido.dart';
+import 'package:tennis_ref/presentations/splash/splash_inicial.dart';
+import 'package:tennis_ref/presentations/splash/splash_jugadores_amistoso.dart';
 
 final appRouter = GoRouter(
   initialLocation: '/',
@@ -40,6 +41,17 @@ final appRouter = GoRouter(
     GoRoute(
       path: '/selectjugadores',
       builder: (context, state) => SelectJugadoresScreen()
+    ),GoRoute(
+    path: '/splashCargaPartido',
+    builder: (context, state) {
+      // Extraemos el Map
+      final extras = state.extra as Map<String, dynamic>;
+      
+      return SplashCargaPartido(
+          jugador1Id: extras['jugador1Id'] as String,
+          jugador2Id: extras['jugador2Id'] as String,
+        );
+      }
     ),
     /* GoRoute(
       path: '/partido',

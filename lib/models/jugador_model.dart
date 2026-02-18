@@ -1,18 +1,28 @@
+// To parse this JSON data, do
+//
+//     final jugador = jugadorFromJson(jsonString);
+
+import 'dart:convert';
+
+Jugador jugadorFromJson(String str) => Jugador.fromJson(json.decode(str));
+
+String jugadorToJson(Jugador data) => json.encode(data.toJson());
+
 class Jugador {
-    String id;
+    String? id;
     String nombreCompleto;
     String pais;
-    String bandera;
+    dynamic bandera;
     DateTime fechaNacimiento;
     int rankingAtp;
     int mejorRanking;
-    ManoDominante manoDominante;
+    String manoDominante;
     String foto;
     DateTime creacion;
     DateTime actualizacion;
 
     Jugador({
-        required this.id,
+        this.id,
         required this.nombreCompleto,
         required this.pais,
         required this.bandera,
@@ -25,19 +35,37 @@ class Jugador {
         required this.actualizacion,
     });
 
-    factory Jugador.fromJson(Map<String, dynamic> json) => Jugador(
-        id: json["id"],
-        nombreCompleto: json["nombre_completo"],
-        pais: json["pais"],
-        bandera: json["bandera"],
-        fechaNacimiento: DateTime.parse(json["fecha_nacimiento"]),
-        rankingAtp: json["ranking_atp"],
-        mejorRanking: json["mejor_ranking"],
-        manoDominante: manoDominanteValues.map[json["mano_dominante"]]!,
-        foto: json["foto"],
-        creacion: DateTime.parse(json["creacion"]),
-        actualizacion: DateTime.parse(json["actualizacion"]),
-    );
+    factory Jugador.fromJson(Map<String, dynamic> json) {
+  return Jugador(
+    id: json["id"]?.toString(), 
+    nombreCompleto: json["nombre_completo"] ?? "Sin nombre",
+    pais: json["pais"] ?? "Sin país",
+    bandera: json["bandera"] ?? "",
+    
+    // Protección para fecha_nacimiento
+    fechaNacimiento: json["fecha_nacimiento"] != null 
+        ? DateTime.parse(json["fecha_nacimiento"]) 
+        : DateTime(2000, 1, 1),
+        
+    rankingAtp: json["ranking_atp"] ?? 0,
+    mejorRanking: json["mejor_ranking"] ?? 0,
+    manoDominante: json["mano_dominante"] ?? "D",
+    
+    // Protección para el error de List<dynamic> en la foto
+    foto: (json["foto"] is List) 
+        ? json["foto"][0].toString() 
+        : (json["foto"]?.toString() ?? ""),
+    
+    // Protección para creación y actualización
+    creacion: json["creacion"] != null 
+        ? DateTime.parse(json["creacion"]) 
+        : DateTime.now(),
+        
+    actualizacion: json["actualizacion"] != null 
+        ? DateTime.parse(json["actualizacion"]) 
+        : DateTime.now(),
+  );
+}
 
     Map<String, dynamic> toJson() => {
         "id": id,
@@ -47,31 +75,9 @@ class Jugador {
         "fecha_nacimiento": "${fechaNacimiento.year.toString().padLeft(4, '0')}-${fechaNacimiento.month.toString().padLeft(2, '0')}-${fechaNacimiento.day.toString().padLeft(2, '0')}",
         "ranking_atp": rankingAtp,
         "mejor_ranking": mejorRanking,
-        "mano_dominante": manoDominanteValues.reverse[manoDominante],
+        "mano_dominante": manoDominante,
         "foto": foto,
         "creacion": creacion.toIso8601String(),
         "actualizacion": actualizacion.toIso8601String(),
     };
-}
-
-enum ManoDominante {
-    D,
-    Z
-}
-
-final manoDominanteValues = EnumValues({
-    "D": ManoDominante.D,
-    "Z": ManoDominante.Z
-});
-
-class EnumValues<T> {
-    Map<String, T> map;
-    late Map<T, String> reverseMap;
-
-    EnumValues(this.map);
-
-    Map<T, String> get reverse {
-            reverseMap = map.map((k, v) => MapEntry(v, k));
-            return reverseMap;
-    }
 }

@@ -2,10 +2,10 @@ import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
-import 'package:tenis_pot3/Utils/utils.dart';
-import 'package:tenis_pot3/models/theme_config_model.dart';
-import 'package:tenis_pot3/providers/tema_provider.dart';
-import 'package:tenis_pot3/services/auth_service.dart';
+import 'package:tennis_ref/Utils/utils.dart';
+import 'package:tennis_ref/models/theme_config_model.dart';
+import 'package:tennis_ref/providers/tema_provider.dart';
+import 'package:tennis_ref/services/auth_service.dart';
 
 
 class HomeScreen extends StatelessWidget {
