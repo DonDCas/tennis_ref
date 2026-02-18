@@ -32,13 +32,6 @@ final appRouter = GoRouter(
       builder: (context, state) => MenuPartidoScreen(),
     ),
     GoRoute(
-      path: '/splashamistoso',
-      builder: (context, state){
-        final temaMenu = state.extra as TemaConfig;
-        return SplashJugadoresAmistosos(temaConfig: temaMenu);
-        },
-    ),
-    GoRoute(
       path: '/selectjugadores',
       builder: (context, state) => SelectJugadoresScreen()
     ),GoRoute(

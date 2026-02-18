@@ -30,14 +30,16 @@ class PlayerCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    double heightSize = MediaQuery.of(context).size.height /2;
+    double widgthSize = MediaQuery.of(context).size.height /2;
     // Si no hay jugador en ese índice, mostramos la tarjeta de añadir
     if (jugador == null) {
-      return _addPlayerCard(posInferior,posSuperior);
+      return _addPlayerCard(posInferior,posSuperior, heightSize,widgthSize );
     }
 
     return Container(
-      width: 350,
-      height: 400, // Ajustado para que quepa el ranking
+      width: widgthSize,
+      height: heightSize, // Ajustado para que quepa el ranking
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: Color(Utils.parseHex(tema.buttonColor)),
@@ -93,12 +95,12 @@ class PlayerCard extends StatelessWidget {
     );
   }
 
-  Widget _addPlayerCard(bool posInferior, bool posSuperior) {
+  Widget _addPlayerCard(bool posInferior, bool posSuperior, double heightSize, double widgthSize) {
     return GestureDetector(
       onTap: onAddPlayer,
       child: Container(
-        width: 350,
-        height: 400,
+        width: widgthSize,
+        height: heightSize,
         decoration: BoxDecoration(
           color: Color(Utils.parseHex(tema.buttonColor)),
           borderRadius: BorderRadius.circular(tema.borderRadius.toDouble()),
@@ -110,22 +112,16 @@ class PlayerCard extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Positioned(
-                  left: 0,
-                  child: IconButton(
+                 IconButton(
                     iconSize: 50,
                     onPressed: onPrev,
                     icon: Icon(Icons.chevron_left, color: Color(Utils.parseHex(tema.neonColor))),
                   ),
-                ),
                 Icon(Icons.add_circle_outline, size: 80, color: Color(Utils.parseHex(tema.neonColor))),
-                Positioned(
-                  left: 0,
-                  child: IconButton(
-                    iconSize: 50,
-                    onPressed: onNext,
-                    icon: Icon(Icons.chevron_right, color: Color(Utils.parseHex(tema.neonColor))),
-                  ),
+                IconButton(
+                  iconSize: 50,
+                  onPressed: onNext,
+                  icon: Icon(Icons.chevron_right, color: Color(Utils.parseHex(tema.neonColor))),
                 )
               ],
             ),

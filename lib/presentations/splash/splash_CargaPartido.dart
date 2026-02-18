@@ -4,6 +4,7 @@ import 'package:tennis_ref/Utils/utils.dart';
 import 'package:tennis_ref/models/jugador_model.dart';
 import 'package:tennis_ref/models/partido_model.dart';
 import 'package:tennis_ref/models/theme_config_model.dart';
+import 'package:tennis_ref/providers/participantes_provider.dart';
 import 'package:tennis_ref/providers/partido_provider.dart';
 import 'package:tennis_ref/providers/tema_provider.dart';
 
@@ -22,7 +23,7 @@ class _SplashCargaPartidoState extends State<SplashCargaPartido> {
   Widget build(BuildContext context) {
     PartidoProvider partidoProvider = Provider.of<PartidoProvider>(context);
     TemaConfig tema = Provider.of<TemaProvider>(context).temaMarcador;
-    Partido? partido;
+    Partido? partido = Provider.of<PartidoProvider>(context).partidoEnJuego;
     @override
     void initState() {
       PartidoProvider partidoProvider = Provider.of<PartidoProvider>(context);
@@ -37,6 +38,7 @@ class _SplashCargaPartidoState extends State<SplashCargaPartido> {
   
   void crearPartido(PartidoProvider partidoProvider) {
     partidoProvider.postPartidoAmistoso();
-    
+    Provider.of<ParticipanteProvider>(context).crearParticipante(widget.jugador1Id, true);
+    Provider.of<ParticipanteProvider>(context).crearParticipante(widget.jugador2Id, false);
   }
 }
