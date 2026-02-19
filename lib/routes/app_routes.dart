@@ -46,10 +46,10 @@ final appRouter = GoRouter(
         );
       }
     ),
-    /* GoRoute(
+    GoRoute(
       path: '/partido',
       builder: (context, state) => PartidoScreen(),
-    ), */
+    ),
     GoRoute(
       path: '/finPartido',
       builder: (context, state){

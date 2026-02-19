@@ -59,8 +59,8 @@ class AuthService {
   }
 
   Future<Map<String, dynamic>?> getMe() async {
-  final url = Uri.https(_URL_ENDPOINT, '/api/v1/user/me/');
-  final token = await getAccessToken(); // Tu método para leer del disco
+  final url = Uri.parse('$_URL_ENDPOINT/user/me/'); 
+  final token = await getAccessToken();
 
   if (token == null) return null;
 

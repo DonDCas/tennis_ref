@@ -11,7 +11,7 @@ class PartidoProvider extends ChangeNotifier{
   // URL y Conexiones
   final String _urlBase = 'api-tenis.duckdns.org';
   
-  final String _apiPath = '/api/v1/partidos';
+  final String _apiPath = '/api/v1/partidos/';
   //Partidos
   List<Partido> partidosHistorial = [];
   Partido? partidoEnJuego;
@@ -24,7 +24,7 @@ class PartidoProvider extends ChangeNotifier{
   PartidoProvider(){}
 
 
-  Future<String> _getJsonData(String path) async {
+  Future<String> _getJsonData(String path, Map<String, String> queryParameters) async {
     Uri uri = Uri.https(_urlBase,path);
     print(uri);
     Response response = await get(uri);
@@ -32,15 +32,19 @@ class PartidoProvider extends ChangeNotifier{
   }
   getAllPatidos() async{
     isLoading = true;
-    final jsonData = await _getJsonData(_apiPath);
-    PartidoResponse partidosResponse = partidoResponseFromJson(jsonData);
+    notifyListeners();
+    final queryParameters = {
+      'estado': 'fin',
+    };
+    final jsonData = await _getJsonData(_apiPath, queryParameters);
+    PartidoResponse partidosResponse = partidoResponseFromJson(jsonData, queryParameters);
     partidosHistorial = partidosResponse.results;
     print(partidosHistorial[0].competicion);
 
     isLoading = false;
     notifyListeners();
   }
-  void postPartidoAmistoso() async {
+  Future<void> postPartidoAmistoso() async {
     // Usuario iniciado?
     if (!await AuthService().estaLogueado()) return;
     isLoading = true;
@@ -49,26 +53,27 @@ class PartidoProvider extends ChangeNotifier{
     Uri uri = Uri.https(_urlBase, _apiPath);
     final token = await AuthService().getAccessToken();
     try{
-      var request = MultipartRequest('POST',uri);
-      request.headers.addAll({
-        'Authorization' : 'Baerer $token',
-      });
-      request.fields['competicion'] = "Amistoso";
-      request.fields['fase'] = "0";
-      request.fields['annio'] = DateTime.now().year.toString() ;
-      request.fields['fecha_iniciado'] = DateTime.now().toIso8601String() ;
-      request.fields['is_tie_break'] = false.toString();
-      request.fields['arbitro'] = userId.toString();
+      var response = await post(
+        uri,
+        headers: {
+          'Authorization': 'Bearer $token', // Aquí es donde se envía realmente
+        },
+        body: {
+          'competicion': "Amistoso",
+          'fase': "0",
+          'annio': DateTime.now().year.toString(),
+          'fecha_iniciado': DateTime.now().toIso8601String(),
+          'is_tie_break': "false",
+          'arbitro': userId.toString(),
+        },
+      );
       
-
-    var response = await post(uri, body: request.fields);
-
     if (response.statusCode == 401){
       bool refrescando = await AuthService().refreshToken();
-      if (refrescando) return postPartidoAmistoso();
-      return null;
+      if (refrescando) return await postPartidoAmistoso();
+      return ;
     }
-
+    print(response.body);
     if (response.statusCode == 201 || response.statusCode == 200) {
       print("Partido creado correctamente");
       partidoEnJuego = Partido.fromJson(jsonDecode(response.body));      
@@ -77,11 +82,11 @@ class PartidoProvider extends ChangeNotifier{
       ;
     } else {
       print("Error del servidor: ${response.body}");
-      return null;
+      return ;
     }
     }catch(e){
       print("Error fatal: $e");
-      return null;
+      return ;
     }
 
 

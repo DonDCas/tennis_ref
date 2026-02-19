@@ -1,3 +1,5 @@
+import 'package:tennis_ref/Utils/utils.dart';
+
 class Partido {
     String id;
     List<Participante> participantes;
@@ -5,8 +7,8 @@ class Partido {
     String competicion;
     String fase;
     int annio;
-    DateTime fechaIniciado;
-    dynamic fechaFinalizado;
+    String? fechaIniciado;
+    String? fechaFinalizado;
     bool isTieBreak;
     DateTime creadoEn;
     String arbitro;
@@ -19,8 +21,8 @@ class Partido {
         required this.competicion,
         required this.fase,
         required this.annio,
-        required this.fechaIniciado,
-        required this.fechaFinalizado,
+        this.fechaIniciado,
+        this.fechaFinalizado,
         required this.isTieBreak,
         required this.creadoEn,
         required this.arbitro,
@@ -29,13 +31,13 @@ class Partido {
 
     factory Partido.fromJson(Map<String, dynamic> json) => Partido(
         id: json["id"],
-        participantes: List<Participante>.from(json["participantes"].map((x) => Participante.fromJson(x))),
+        participantes: List<Participante>.from(json["participantes"].map((x) => Participante.fromJson(x))) ?? [] ,
         estado: json["estado"],
         competicion: json["competicion"],
         fase: json["fase"],
         annio: json["annio"],
-        fechaIniciado: DateTime.parse(json["fecha_iniciado"]),
-        fechaFinalizado: json["fecha_finalizado"],
+        fechaIniciado: json["fecha_iniciado"].toString() ?? 'No iniciado',
+        fechaFinalizado: json["fecha_finalizado"] ?? 'No finalizado',
         isTieBreak: json["is_tie_break"],
         creadoEn: DateTime.parse(json["creado_en"]),
         arbitro: json["arbitro"].toString(),
@@ -49,7 +51,7 @@ class Partido {
         "competicion": competicion,
         "fase": fase,
         "annio": annio,
-        "fecha_iniciado": fechaIniciado.toIso8601String(),
+        "fecha_iniciado": fechaIniciado,
         "fecha_finalizado": fechaFinalizado,
         "is_tie_break": isTieBreak,
         "creado_en": creadoEn.toIso8601String(),
@@ -78,7 +80,7 @@ class Participante {
     });
 
     factory Participante.fromJson(Map<String, dynamic> json) => Participante(
-        id: json["jugador"],
+        id: json["jugador_id"],
         jugadorNombre: json["jugador_nombre"],
         esJugador1: json["es_jugador1"],
         sets1: json["sets_1"],
@@ -88,7 +90,7 @@ class Participante {
     );
 
     Map<String, dynamic> toJson() => {
-        "jugador": id,
+        "jugador_id": id,
         "jugador_nombre": jugadorNombre,
         "es_jugador1": esJugador1,
         "sets_1": sets1,

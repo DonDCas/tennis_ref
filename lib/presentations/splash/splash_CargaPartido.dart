@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:tennis_ref/Utils/utils.dart';
-import 'package:tennis_ref/models/jugador_model.dart';
-import 'package:tennis_ref/models/partido_model.dart';
 import 'package:tennis_ref/models/theme_config_model.dart';
 import 'package:tennis_ref/providers/participantes_provider.dart';
 import 'package:tennis_ref/providers/partido_provider.dart';
@@ -19,26 +18,40 @@ class SplashCargaPartido extends StatefulWidget {
 }
 
 class _SplashCargaPartidoState extends State<SplashCargaPartido> {
+
+  @override
+    void initState() {
+      super.initState();
+      Future.microtask(() => _crearPartido());
+
+    }
+
+     Future<void> _crearPartido() async{
+      PartidoProvider partidoProvider = Provider.of<PartidoProvider>(context, listen: false);
+      ParticipanteProvider participantesProvider = Provider.of<ParticipanteProvider>(context, listen: false);
+      await partidoProvider.postPartidoAmistoso();
+      if (partidoProvider.partidoEnJuego != null){
+        final partidoId = partidoProvider.partidoEnJuego!.id;
+        await participantesProvider.addParticipante(widget.jugador1Id, true, partidoId);
+        await participantesProvider.addParticipante(widget.jugador2Id, false, partidoId); 
+
+        if (mounted) {
+        context.go('/partido');
+       }
+      }
+    }
   @override
   Widget build(BuildContext context) {
     PartidoProvider partidoProvider = Provider.of<PartidoProvider>(context);
     TemaConfig tema = Provider.of<TemaProvider>(context).temaMarcador;
-    Partido? partido = Provider.of<PartidoProvider>(context).partidoEnJuego;
-    @override
-    void initState() {
-      PartidoProvider partidoProvider = Provider.of<PartidoProvider>(context);
-      super.initState();
-      crearPartido(partidoProvider);
-    }
+    
     return Scaffold(
       backgroundColor: Color(Utils.parseHex(tema.primaryColor)),
-      body: (!partidoProvider.isLoading) ? Center(child: CircularProgressIndicator(),): Center(child: Text("hola", style: TextStyle(color: Colors.white),)),
+      body: Center(
+        child: CircularProgressIndicator(),
+      )
     );
   }
   
-  void crearPartido(PartidoProvider partidoProvider) {
-    partidoProvider.postPartidoAmistoso();
-    Provider.of<ParticipanteProvider>(context).crearParticipante(widget.jugador1Id, true);
-    Provider.of<ParticipanteProvider>(context).crearParticipante(widget.jugador2Id, false);
-  }
+ 
 }

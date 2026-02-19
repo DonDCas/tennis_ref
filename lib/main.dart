@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tennis_ref/providers/jugador_provider.dart';
+import 'package:tennis_ref/providers/participantes_provider.dart';
 import 'package:tennis_ref/providers/partido_provider.dart';
 import 'package:tennis_ref/providers/tema_provider.dart';
 import 'package:tennis_ref/routes/app_routes.dart';
@@ -25,6 +26,10 @@ class AppState extends StatelessWidget {
         ),
         ChangeNotifierProvider(
           create: (_) => JugadorProvider(),
+          lazy: false,
+        ),
+        ChangeNotifierProvider(
+          create: (_) => ParticipanteProvider(),
           lazy: false,
         )
       ],

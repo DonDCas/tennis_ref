@@ -1,18 +1,18 @@
-/* import 'dart:math';
+import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_glow/flutter_glow.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:tenis_pot3/Utils/utils.dart';
-import 'package:tenis_pot3/controller/appController.dart';
-import 'package:tenis_pot3/models/jugador_model.dart';
-import 'package:tenis_pot3/models/partido_model.dart';
-import 'package:tenis_pot3/models/theme_config_model.dart';
-import 'package:tenis_pot3/presentations/widget/puntuaciones_widget.dart';
-import 'package:tenis_pot3/services/jugador_service.dart';
-import 'package:tenis_pot3/services/partido_service.dart';
-import 'package:tenis_pot3/services/theme_config_service.dart';
+import 'package:tennis_ref/Utils/utils.dart';
+import 'package:tennis_ref/controller/appController.dart';
+import 'package:tennis_ref/models/jugador_model.dart';
+import 'package:tennis_ref/models/partido_model.dart';
+import 'package:tennis_ref/models/theme_config_model.dart';
+import 'package:tennis_ref/presentations/widget/puntuaciones_widget.dart';
+import 'package:tennis_ref/services/jugador_service.dart';
+import 'package:tennis_ref/services/partido_service.dart';
+import 'package:tennis_ref/services/theme_config_service.dart';
 
 class PartidoScreen extends StatefulWidget {
   PartidoScreen({super.key});
@@ -424,5 +424,3 @@ class AvatarJugador extends StatelessWidget {
     );
   }
 }
-
- */
