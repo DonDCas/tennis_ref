@@ -1,4 +1,5 @@
 import 'package:tennis_ref/Utils/utils.dart';
+import 'package:tennis_ref/models/jugador_model.dart';
 
 class Partido {
     String id;
@@ -60,7 +61,7 @@ class Partido {
     };
 }
 
-class Participante {
+class Participante{
     String id;
     String jugadorNombre;
     bool esJugador1;

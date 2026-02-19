@@ -3,7 +3,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:http/http.dart' as http;
+import 'package:http/http.dart';
 import 'package:tennis_ref/models/jugadorResponse_model.dart';
 import 'package:tennis_ref/models/jugador_model.dart';
 import 'package:tennis_ref/services/auth_service.dart';
@@ -16,11 +16,13 @@ class JugadorProvider extends ChangeNotifier{
   final String _apiPath = '/api/v1/jugadores/';
   //Temas
   List<Jugador> jugadores = [];
-
+  late Jugador jugadorEnJuego1;
+  late Jugador jugadorEnJuego2;
 
   // Observadores de estado
     bool isLoading = true;
     int _pageResult = 0;
+    
   JugadorProvider(){
     getAllJugadores();
   }
@@ -28,7 +30,7 @@ class JugadorProvider extends ChangeNotifier{
   // GETs
   Future<String> _getJsonData(String path, [int page = 1]) async {
     Uri uri = Uri.https(_urlBase,path,{'page':'$page'});
-    http.Response response = await http.get(uri);
+    Response response = await get(uri);
     if (response.statusCode != 200) return '';
     return response.body;
   }
@@ -45,38 +47,60 @@ class JugadorProvider extends ChangeNotifier{
     isLoading = false;
     notifyListeners();
   }
-  
+
+  Future<Jugador?> getJugadorById(String jugadorId) async {
+    final pathPorId = _apiPath+"/"+jugadorId;
+    final jsonData = await _getJsonData(pathPorId);
+    if (jsonData.isEmpty) return null ;
+    final Map<String, dynamic> data = json.decode(jsonData);
+    return Jugador.fromJson(data);
+  }
+
+  Future<void> prepararJugadorEnJuego(String jugadorId, bool esJugador1) async {
+    isLoading = true;
+    notifyListeners();
+    final Jugador? jugadorTemp = await getJugadorById(jugadorId);
+    
+    if(jugadorTemp != null)
+    if (esJugador1){
+      jugadorEnJuego1 = jugadorTemp;
+    }else{
+      jugadorEnJuego2 = jugadorTemp;
+    }
+    isLoading = false;
+    notifyListeners();
+  }
 
   //POSTs
   
-  Future<http.Response?> _postJsonData(String json) async {
-  final uri = Uri.https(_urlBase, _apiPath);
-  
-  try {
-    var response = await http.post(
-      uri,
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer ${await AuthService().getAccessToken()}'
-      },
-      body: json
-    );
-
-    if (response.statusCode == 401) {
-      print("Token Caducado");
-      bool refrescando = await AuthService().refreshToken();
-      if (!refrescando) return response; // Devuelve el 401 original
-      
-      print("Token refrescado, reintentando petición...");
-      return await _postJsonData(json); // REINTENTO
-    }
-    print("Respuesta servidor (${response.statusCode}): ${response.body}");
+  Future<Response?> _postJsonData(String json) async {
+    final uri = Uri.https(_urlBase, _apiPath);
     
-    return response;
-  } catch (e) {
-    print("Error en la conexión: $e");
-    return null;
-  }
+    try {
+      var response = await post(
+        uri,
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ${await AuthService().getAccessToken()}'
+        },
+        body: json
+      );
+
+      if (response.statusCode == 401) {
+        print("Token Caducado");
+        bool refrescando = await AuthService().refreshToken();
+        if (!refrescando) return response; // Devuelve el 401 original
+        
+        print("Token refrescado, reintentando petición...");
+        return await _postJsonData(json); // REINTENTO
+      }
+      print("Respuesta servidor (${response.statusCode}): ${response.body}");
+      
+      return response;
+    } catch (e) {
+      print("Error en la conexión: $e");
+      return null;
+    }
 }
 Future<Jugador?> crearJugador(Jugador jugador, File imagen) async {
   if (!await AuthService().estaLogueado()) return null;
@@ -86,7 +110,7 @@ Future<Jugador?> crearJugador(Jugador jugador, File imagen) async {
   final token = await AuthService().getAccessToken();
 
   try {
-    var request = http.MultipartRequest('POST', uri);
+    var request = MultipartRequest('POST', uri);
 
     request.headers.addAll({
       'Authorization': 'Bearer $token',
@@ -100,15 +124,15 @@ Future<Jugador?> crearJugador(Jugador jugador, File imagen) async {
     request.fields['mejor_ranking'] = jugador.mejorRanking.toString();
     request.fields['mano_dominante'] = jugador.manoDominante;
 
-    var stream = http.ByteStream(imagen.openRead());
+    var stream = ByteStream(imagen.openRead());
     var length = await imagen.length();
-    var multipartFile = http.MultipartFile('foto', stream, length,
+    var multipartFile = MultipartFile('foto', stream, length,
         filename: imagen.path.split('/').last);
     
     request.files.add(multipartFile);
 
     var streamedResponse = await request.send();
-    var response = await http.Response.fromStream(streamedResponse);
+    var response = await Response.fromStream(streamedResponse);
 
     if (response.statusCode == 401) {
       bool refrescando = await AuthService().refreshToken();
@@ -132,5 +156,6 @@ Future<Jugador?> crearJugador(Jugador jugador, File imagen) async {
     return null;
   }
 }
+  
 }
   

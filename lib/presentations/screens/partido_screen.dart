@@ -3,17 +3,42 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_glow/flutter_glow.dart';
 import 'package:go_router/go_router.dart';
-import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
 import 'package:tennis_ref/Utils/utils.dart';
 import 'package:tennis_ref/controller/appController.dart';
 import 'package:tennis_ref/models/jugador_model.dart';
 import 'package:tennis_ref/models/partido_model.dart';
 import 'package:tennis_ref/models/theme_config_model.dart';
 import 'package:tennis_ref/presentations/widget/puntuaciones_widget.dart';
+import 'package:tennis_ref/providers/jugador_provider.dart';
+import 'package:tennis_ref/providers/participantes_provider.dart';
+import 'package:tennis_ref/providers/partido_provider.dart';
+import 'package:tennis_ref/providers/tema_provider.dart';
 import 'package:tennis_ref/services/jugador_service.dart';
 import 'package:tennis_ref/services/partido_service.dart';
 import 'package:tennis_ref/services/theme_config_service.dart';
 
+
+class PartidoScreen extends StatelessWidget{
+  PartidoScreen({super.key})
+
+
+  @override
+  Widget build(BuildContext context) {
+    //Cargamos Tema
+    TemaConfig tema = Provider.of<TemaProvider>(context).temaMarcador;
+    //Cargamos Providers
+    PartidoProvider partidoProvider = Provider.of<PartidoProvider>(context);
+    ParticipanteProvider participanteProvider = Provider.of<ParticipanteProvider>(context);
+    JugadorProvider jugadorProvider = Provider.of<JugadorProvider>(context);
+
+    //Cargamos Objetos
+    Partido partido = partidoProvider.partidoEnJuego!;
+    Participante participante1 = partido.participantes[0];
+    Participante participante2 = partido.participantes[1];
+
+    throw UnimplementedError();
+  }}
 class PartidoScreen extends StatefulWidget {
   PartidoScreen({super.key});
   @override

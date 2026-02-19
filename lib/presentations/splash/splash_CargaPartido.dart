@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:tennis_ref/Utils/utils.dart';
 import 'package:tennis_ref/models/theme_config_model.dart';
+import 'package:tennis_ref/providers/jugador_provider.dart';
 import 'package:tennis_ref/providers/participantes_provider.dart';
 import 'package:tennis_ref/providers/partido_provider.dart';
 import 'package:tennis_ref/providers/tema_provider.dart';
@@ -29,11 +30,14 @@ class _SplashCargaPartidoState extends State<SplashCargaPartido> {
      Future<void> _crearPartido() async{
       PartidoProvider partidoProvider = Provider.of<PartidoProvider>(context, listen: false);
       ParticipanteProvider participantesProvider = Provider.of<ParticipanteProvider>(context, listen: false);
+      JugadorProvider jugadorProvider = Provider.of<JugadorProvider>(context, listen: false);
       await partidoProvider.postPartidoAmistoso();
       if (partidoProvider.partidoEnJuego != null){
         final partidoId = partidoProvider.partidoEnJuego!.id;
         await participantesProvider.addParticipante(widget.jugador1Id, true, partidoId);
-        await participantesProvider.addParticipante(widget.jugador2Id, false, partidoId); 
+        await participantesProvider.addParticipante(widget.jugador2Id, false, partidoId);
+        await jugadorProvider.prepararJugadorEnJuego(widget.jugador1Id, true);
+        await jugadorProvider.prepararJugadorEnJuego(widget.jugador2Id, false);
 
         if (mounted) {
         context.go('/partido');
