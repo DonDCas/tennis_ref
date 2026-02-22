@@ -91,7 +91,7 @@ class PartidoScreen extends StatelessWidget{
            PuntuacionesWidget(tema, partido, jugador1, jugador2, participante1, participante2),
            SizedBox(height: MediaQuery.of(context).size.height / 6 -70 ,),
            lineaDivisoria(size, tema),
-           Spacer(),
+           SizedBox(height: MediaQuery.of(context).size.height / 18 ,),           
            Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [

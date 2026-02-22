@@ -86,4 +86,43 @@ class AuthService {
   return null;
 }
 
+  Future<bool> registrar({required String user, required String email, required String pass}) async {
+    final url = Uri.parse('https://api-tenis.duckdns.org/api/register/');
+
+    try {
+      // 1. Definimos el body según tu estructura
+      final Map<String, String> body = {
+        "username": user,
+        "email": email,
+        "password": pass,
+      };
+
+      // 2. Realizamos la petición POST
+      final response = await post(
+        url,
+        headers: {
+          'Content-Type': 'application/json',
+          // Si tu backend requiere algún token o header extra, iría aquí
+        },
+        body: jsonEncode(body),
+      );
+
+      // 3. Verificamos el resultado
+      if (response.statusCode == 201 || response.statusCode == 200) {
+        // Registro exitoso
+        return true;
+      } else {
+        // Error del servidor (ej: usuario ya existe)
+        print("Error en registro: ${response.body}");
+        return false;
+      }
+    } catch (e) {
+      // Error de conexión (CORS, internet, etc.)
+      print("Error de red al registrar: $e");
+      return false;
+    }
+  }
+
+
+
 }

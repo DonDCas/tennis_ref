@@ -64,11 +64,10 @@ class PartidoProvider extends ChangeNotifier{
 
     try {
       final jsonData = await _getJsonData(_apiPath, queryParameters);
-      print(jsonData);
       PartidoResponse partidosResponse = partidoResponseFromJson(jsonData);
       partidosHistorial = partidosResponse.results;
     } catch (e) {
-      print(e);
+      print('ERROR: $e');
     }
     isLoading = false;
     notifyListeners();
@@ -138,20 +137,16 @@ class PartidoProvider extends ChangeNotifier{
 
     try {
       final Map<String, String> queryParameters = {
-        'estado': 'gam', // 'gam' de "In Game"
+        'estado': 'gam',
         'ordering': '-creado_en',
         'page': _pagePartidosOficiales.toString(),
       };
-      
-      // Si necesitas filtrar solo los del árbitro actual, 
-      // podrías añadir: 'arbitro': usuarioId.toString()
-      
+     
       if (query != null && query.isNotEmpty) queryParameters['search'] = query;
 
       final responseBody = await _getJsonData(_apiPath, queryParameters);
       final partidoResponse = partidoResponseFromJson(responseBody);
 
-      // --- EL CAMBIO CLAVE: AÑADIR LOS DATOS A LA LISTA ---
       partidosSinEmpezar.addAll(partidoResponse.results);
 
       if (partidoResponse.next != null) {
@@ -220,19 +215,16 @@ class PartidoProvider extends ChangeNotifier{
           'arbitro': userId.toString()
         },
       );
-    print(response.body);
     if (response.statusCode == 401){
       bool refrescando = await AuthService().refreshToken();
       if (refrescando) return await postPartidoAmistoso();
       return ;
     }
-    print(response.body);
     if (response.statusCode == 201 || response.statusCode == 200) {
       print("Partido creado correctamente");
       partidoEnJuego = Partido.fromJson(jsonDecode(response.body));      
       isLoading = false; 
       notifyListeners();
-      ;
     } else {
       print("Error del servidor: ${response.body}");
       return ;
@@ -274,7 +266,6 @@ class PartidoProvider extends ChangeNotifier{
     );
 
     if (response.statusCode == 200) {
-      print("Partido iniciado y árbitro asignado correctamente");
       
       for (var p in partidoEnJuego!.participantes) {
         await _patchParticipante(p);
@@ -305,15 +296,10 @@ class PartidoProvider extends ChangeNotifier{
           'estado': 'gam'
         }),
       );
-
-      print("Status PATCH: ${response.statusCode}");
-      print("Body PATCH: ${response.body}");
-
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
         partidoEnJuego = Partido.fromJson(data);
         
-        print("Partido actualizado mediante PATCH correctamente");
         notifyListeners();
       } else {
         print("Error en PATCH: ${response.body}");
@@ -337,7 +323,7 @@ class PartidoProvider extends ChangeNotifier{
       'ganador_id': partidoEnJuego!.ganador,
       }),
     );
-    print(response.body);
+    partidoEnJuego = jsonDecode(response.body);
     notifyListeners();
   }
 
@@ -363,7 +349,6 @@ class PartidoProvider extends ChangeNotifier{
       );
 
       if (response.statusCode == 200 || response.statusCode == 204) {
-        print("Partido actualizado con éxito");
         return true;
       } else {
         print("Error al actualizar: ${response.body}");

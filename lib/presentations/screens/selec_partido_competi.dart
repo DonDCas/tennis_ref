@@ -23,11 +23,8 @@ class _SeleccionCompeticionScreenState extends State<SeleccionCompeticionScreen>
   void initState() {
     super.initState();
 
-    // 1. Escuchar el scroll para carga infinita
     _scrollController.addListener(() {
       final partidoProvider = Provider.of<PartidoProvider>(context, listen: false);
-      
-      // Si llegamos al 80% del scroll y no está cargando, pedimos más
       if (_scrollController.position.pixels >= _scrollController.position.maxScrollExtent - 200) {
         if (!partidoProvider.isLoading) {
           partidoProvider.getPartidosOficiales();
@@ -35,7 +32,6 @@ class _SeleccionCompeticionScreenState extends State<SeleccionCompeticionScreen>
       }
     });
 
-    // 2. Carga inicial al entrar
     WidgetsBinding.instance.addPostFrameCallback((_) {
       Provider.of<PartidoProvider>(context, listen: false).getPartidosOficiales(resetPage: true);
     });
@@ -53,29 +49,39 @@ class _SeleccionCompeticionScreenState extends State<SeleccionCompeticionScreen>
     final partidoProvider = Provider.of<PartidoProvider>(context);
     final tema = Provider.of<TemaProvider>(context).temaMarcador;
     final partidos = partidoProvider.partidosSinEmpezar;
+    final size = MediaQuery.of(context).size;
 
     return Scaffold(
       backgroundColor: Color(Utils.parseHex(tema.primaryColor)),
       appBar: AppBar(
         backgroundColor: Color(Utils.parseHex(tema.primaryColor)),
         elevation: 0,
+        centerTitle: false,
         automaticallyImplyLeading: false,
         title: partidoProvider.isSearching
-            ? TextField(
-                autofocus: true,
-                style: const TextStyle(color: Colors.white),
-                decoration: const InputDecoration(
-                  hintText: "Buscar competición...",
-                  hintStyle: TextStyle(color: Colors.white54),
-                  border: InputBorder.none,
+            ? Container(
+                height: 40,
+                decoration: BoxDecoration(
+                  color: Colors.white.withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(10),
                 ),
-                onChanged: (value) {
-                  // Debounce para no saturar la API al escribir
-                  if (_debounce?.isActive ?? false) _debounce!.cancel();
-                  _debounce = Timer(const Duration(milliseconds: 500), () {
-                    partidoProvider.getPartidosOficiales(query: value, resetPage: true);
-                  });
-                },
+                child: TextField(
+                  autofocus: true,
+                  style: const TextStyle(color: Colors.white, fontSize: 14),
+                  decoration: const InputDecoration(
+                    hintText: "Buscar torneo o jugador...",
+                    hintStyle: TextStyle(color: Colors.white54),
+                    border: InputBorder.none,
+                    prefixIcon: Icon(Icons.search, color: Colors.white54),
+                    contentPadding: EdgeInsets.symmetric(vertical: 10),
+                  ),
+                  onChanged: (value) {
+                    if (_debounce?.isActive ?? false) _debounce!.cancel();
+                    _debounce = Timer(const Duration(milliseconds: 500), () {
+                      partidoProvider.getPartidosOficiales(query: value, resetPage: true);
+                    });
+                  },
+                ),
               )
             : Text("Partidos Oficiales", 
                 style: TextStyle(color: Color(Utils.parseHex(tema.textColor)))),
@@ -87,7 +93,6 @@ class _SeleccionCompeticionScreenState extends State<SeleccionCompeticionScreen>
             ),
             onPressed: () {
               if (partidoProvider.isSearching) {
-                // Al cerrar búsqueda, reseteamos la lista
                 partidoProvider.getPartidosOficiales(resetPage: true);
               }
               partidoProvider.setSearching(!partidoProvider.isSearching);
@@ -95,41 +100,47 @@ class _SeleccionCompeticionScreenState extends State<SeleccionCompeticionScreen>
           ),
           IconButton(
             onPressed: () => context.go('/menupartido'),
-            icon: Icon(
-              Icons.arrow_back_ios_new,
-              color: Color(Utils.parseHex(tema.neonColor))
-            )
+            icon: Icon(Icons.arrow_back_ios_new, color: Color(Utils.parseHex(tema.neonColor)))
           ),
-          const SizedBox(width: 20)
+          const SizedBox(width: 10)
         ],
       ),
-      body: RefreshIndicator(
-        onRefresh: () => partidoProvider.getPartidosOficiales(resetPage: false),
-        child: Column(
-          children: [
-            _buildHeaderTable(tema),
-            Expanded(
-              child: partidos.isEmpty && partidoProvider.isLoading
-                  ? _buildLoadingGif()
-                  : ListView.builder(
-                      controller: _scrollController,
-                      physics: const AlwaysScrollableScrollPhysics(),
-                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-                      itemCount: partidos.length + (partidoProvider.isLoading ? 1 : 0),
-                      itemBuilder: (context, index) {
-                        if (index == partidos.length) {
-                          return const Center(
-                            child: Padding(
-                              padding: EdgeInsets.all(15.0),
-                              child: CircularProgressIndicator(color: Colors.white),
-                            ),
-                          );
-                        }
-                        return _buildPartidoCard(partidos[index], tema, partidoProvider);
-                      },
-                    ),
-            ),
-          ],
+      // Scrollbar es vital para Web
+      body: Scrollbar(
+        controller: _scrollController,
+        thumbVisibility: true, 
+        child: RefreshIndicator(
+          onRefresh: () => partidoProvider.getPartidosOficiales(resetPage: true),
+          child: Column(
+            children: [
+              _buildHeaderTable(tema, size),
+              Expanded(
+                child: partidos.isEmpty && partidoProvider.isLoading
+                    ? _buildLoadingGif()
+                    : ListView.builder(
+                        controller: _scrollController,
+                        physics: const AlwaysScrollableScrollPhysics(),
+                        // Limitar el ancho en pantallas grandes (Web)
+                        padding: EdgeInsets.symmetric(
+                          horizontal: size.width > 900 ? size.width * 0.1 : 10, 
+                          vertical: 10
+                        ),
+                        itemCount: partidos.length + (partidoProvider.isLoading ? 1 : 0),
+                        itemBuilder: (context, index) {
+                          if (index == partidos.length) {
+                            return const Center(
+                              child: Padding(
+                                padding: EdgeInsets.all(20.0),
+                                child: CircularProgressIndicator(),
+                              ),
+                            );
+                          }
+                          return _buildPartidoCard(partidos[index], tema, partidoProvider);
+                        },
+                      ),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -140,34 +151,37 @@ class _SeleccionCompeticionScreenState extends State<SeleccionCompeticionScreen>
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Image.asset('assets/gif/Tennis_Ball.gif', width: 100),
+          Image.asset('assets/gif/Tennis_Ball.gif', width: 80),
           const SizedBox(height: 20),
-          const Text('Buscando partidos disponibles...', 
-            style: TextStyle(color: Colors.white)),
+          const Text('Cargando partidos...', style: TextStyle(color: Colors.white)),
         ],
       ),
     );
   }
 
   Widget _buildPartidoCard(Partido partido, TemaConfig tema, PartidoProvider partidoProvider) {
-    return Card(
-      color: Color(Utils.parseHex(tema.tableRowColor ?? '#2c2c2c', transparencia: 'AA')),
-      margin: const EdgeInsets.symmetric(vertical: 5),
+    return Container(
+      margin: const EdgeInsets.symmetric(vertical: 4),
+      decoration: BoxDecoration(
+        color: Color(Utils.parseHex(tema.tableRowColor ?? '#2c2c2c')).withOpacity(0.8),
+        borderRadius: BorderRadius.circular(8),
+      ),
       child: ListTile(
+        hoverColor: Colors.white10, // Feedback visual para mouse en Web
         title: Row(
           children: [
-            headerCell(partido.fechaIniciado ?? 'N/A', Colors.white70),
-            headerCell(partido.competicion, Colors.white70),
+            headerCell(partido.fechaIniciado ?? 'TBD', Colors.white70),
+            headerCell(partido.competicion, Colors.white, isBold: true),
             headerCell(Utils.conversorFase(partido.fase), Colors.white70),
             headerCell( 
-              partido.participantes.isNotEmpty 
-                ? '${partido.participantes[0].jugadorNombre}\nVS\n${partido.participantes[1].jugadorNombre}' 
-                : 'TBD', 
+              partido.participantes.length >= 2
+                ? '${partido.participantes[0].jugadorNombre} vs ${partido.participantes[1].jugadorNombre}' 
+                : 'Por definir', 
               Color(Utils.parseHex(tema.neonColor))
             ),
           ],
         ),
-        trailing: const Icon(Icons.chevron_right, color: Colors.white54),
+        trailing: const Icon(Icons.play_circle_outline, color: Colors.white38),
         onTap: () {
           partidoProvider.eligePartido(partido);
           context.go(
@@ -182,35 +196,40 @@ class _SeleccionCompeticionScreenState extends State<SeleccionCompeticionScreen>
     );
   }
 
-  Widget _buildHeaderTable(TemaConfig tema) {
+  Widget _buildHeaderTable(TemaConfig tema, Size size) {
     return Container(
-      padding: const EdgeInsets.all(15),
+      margin: EdgeInsets.symmetric(
+        horizontal: size.width > 900 ? size.width * 0.1 : 10,
+        vertical: 10
+      ),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       decoration: BoxDecoration(
         color: Color(Utils.parseHex(tema.buttonColor)),
-        borderRadius: const BorderRadius.vertical(top: Radius.circular(10)),
+        borderRadius: BorderRadius.circular(8),
       ),
       child: Row(
         children: [
-          headerCell('Fecha', Color(Utils.parseHex(tema.textColor))),
-          headerCell('Torneo', Color(Utils.parseHex(tema.textColor))),
-          headerCell('Fase', Color(Utils.parseHex(tema.textColor))),
-          headerCell('Jugadores', Color(Utils.parseHex(tema.textColor))),
-          const SizedBox(width: 40) // Espacio para el chevron del trailing
+          headerCell('FECHA', Color(Utils.parseHex(tema.textColor))),
+          headerCell('TORNEO', Color(Utils.parseHex(tema.textColor))),
+          headerCell('FASE', Color(Utils.parseHex(tema.textColor))),
+          headerCell('ENFRENTAMIENTO', Color(Utils.parseHex(tema.textColor))),
+          const SizedBox(width: 30) 
         ],
       ),
     );
   }
 
-  Widget headerCell(String texto, Color color) {
+  Widget headerCell(String texto, Color color, {bool isBold = false}) {
     return Expanded(
       child: Text(
         texto,
         textAlign: TextAlign.center,
+        maxLines: 2,
         overflow: TextOverflow.ellipsis,
         style: TextStyle(
           color: color,
-          fontSize: 12,
-          fontWeight: FontWeight.bold
+          fontSize: 13,
+          fontWeight: isBold ? FontWeight.bold : FontWeight.normal
         ),
       )
     );

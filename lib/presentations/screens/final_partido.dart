@@ -69,8 +69,8 @@ class FinalPartido extends StatelessWidget {
                       BoxShadow(
                         blurRadius: 20,
                         color: Color(
-                          Utils.parseHex(tema.neonColor),
-                        ).withOpacity(0.5),
+                          Utils.parseHex(tema.neonColor,transparencia: "88"),
+                        ),
                       ),
                     ],
                   ),
@@ -174,12 +174,28 @@ class FinalPartido extends StatelessWidget {
                   ],
                 ),
                 const SizedBox(height: 60),
+                ElevatedButton.icon(
+                  onPressed: () async{
+                    await Utils.exportarPartidoCSV(
+                      partido, 
+                      jganador, 
+                      jperdedor);
+                  }, 
+                  label: const Text('ENVIAR INFORME CSV', style: TextStyle(color: Colors.white)),
+                  icon: const Icon(Icons.share, color: Colors.white),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.blueGrey.shade800,
+                    minimumSize: const Size(100, 50),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(tema.borderRadius.toDouble()),
+                      side: BorderSide(color: Color(Utils.parseHex(tema.neonColor)), width: 1)
+                    ),
+                  ),
+                ),
+                SizedBox(height: 30),
                 ElevatedButton(
                   onPressed: () {
-                    Provider.of<PartidoProvider>(
-                      context,
-                      listen: false,
-                    ).deselecPartido(partido);
+                    Provider.of<PartidoProvider>(context,listen: false,).deselecPartido(partido);
                     context.go("/");
                   },
                   style: ElevatedButton.styleFrom(
@@ -200,6 +216,7 @@ class FinalPartido extends StatelessWidget {
                     ),
                   ),
                 ),
+
               ],
             ),
           ),

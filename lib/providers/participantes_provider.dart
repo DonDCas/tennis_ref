@@ -1,12 +1,7 @@
 import 'dart:convert';
-import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
-import 'package:http/http.dart';
-import 'package:tennis_ref/models/jugadorResponse_model.dart';
-import 'package:tennis_ref/models/jugador_model.dart';
 import 'package:tennis_ref/models/partido_model.dart';
 import 'package:tennis_ref/services/auth_service.dart';
 
@@ -22,23 +17,14 @@ class ParticipanteProvider extends ChangeNotifier{
 
   // Observadores de estado
     bool isLoading = true;
-    int _pageResult = 0;
 
   ParticipanteProvider(){
     //getAllJugadores();
   }
  
-  // GETs
-  Future<String> _getJsonData(String path, [int page = 1]) async {
-    Uri uri = Uri.https(_urlBase,path,{'page':'$page'});
-    http.Response response = await http.get(uri);
-    if (response.statusCode != 200) return '';
-    return response.body;
-  } 
-
   //POSTs
   
-  addParticipante(String jugadorId, bool es_jugador1, String partidoId) async {
+  addParticipante(String jugadorId, bool esJugador1, String partidoId) async {
     if (!await AuthService().estaLogueado()) return null;
     
     final pathFinal = "$_apiPath/$partidoId/add-jugador/";
@@ -55,17 +41,14 @@ class ParticipanteProvider extends ChangeNotifier{
         },
         body: jsonEncode({
           'jugador_id': jugadorId,
-          'es_jugador1': es_jugador1, // Pasamos el bool real, no un String
+          'es_jugador1': esJugador1, // Pasamos el bool real, no un String
           // Los puntos y sets no los envíes, Django pondrá 0 por defecto
         }),
       );
 
-      print("Status: ${response.statusCode}");
-      print("Body: ${response.body}");
-
       if (response.statusCode == 401) {
         if (await AuthService().refreshToken()) {
-          return await addParticipante(jugadorId, es_jugador1, partidoId);
+          return await addParticipante(jugadorId, esJugador1, partidoId);
         }
       }
 

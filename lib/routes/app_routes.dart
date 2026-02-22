@@ -1,6 +1,4 @@
 import 'package:go_router/go_router.dart';
-import 'package:tennis_ref/models/partido_model.dart';
-import 'package:tennis_ref/models/theme_config_model.dart';
 import 'package:tennis_ref/presentations/screens/selec_continuar_partido.dart';
 import 'package:tennis_ref/presentations/screens/selec_partido_competi.dart';
 import 'package:tennis_ref/presentations/screens/select_jugadores_screen.dart';
@@ -10,9 +8,9 @@ import 'package:tennis_ref/presentations/screens/home_screen.dart';
 import 'package:tennis_ref/presentations/screens/login_screen.dart';
 import 'package:tennis_ref/presentations/screens/menu_partido_screen.dart';
 import 'package:tennis_ref/presentations/screens/partido_screen.dart';
+import 'package:tennis_ref/presentations/splash/historial_splash.dart';
 import 'package:tennis_ref/presentations/splash/splash_CargaPartido.dart';
 import 'package:tennis_ref/presentations/splash/splash_inicial.dart';
-import 'package:tennis_ref/presentations/splash/splash_jugadores_amistoso.dart';
 
 final appRouter = GoRouter(
   initialLocation: '/',

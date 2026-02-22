@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
@@ -43,7 +42,6 @@ class JugadorProvider extends ChangeNotifier{
     final Map<String, dynamic> data = json.decode(jsonData);
     JugadorResponse partidosResponse = JugadorResponse.fromJson(data);
     jugadores = [...jugadores, ...partidosResponse.results];
-    print(jugadores[jugadores.length-1]);
     isLoading = false;
     notifyListeners();
   }
@@ -79,7 +77,6 @@ class JugadorProvider extends ChangeNotifier{
     if (!await AuthService().estaLogueado()) return null;
 
     final uri = Uri.https(_urlBase, '$_apiPath'); 
-    print(uri);
     final token = await AuthService().getAccessToken();
 
     try {
