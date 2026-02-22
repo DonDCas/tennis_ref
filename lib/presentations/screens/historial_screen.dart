@@ -6,11 +6,9 @@ import 'package:tennis_ref/Utils/utils.dart';
 import 'package:tennis_ref/models/jugador_model.dart';
 import 'package:tennis_ref/models/partido_model.dart';
 import 'package:tennis_ref/models/theme_config_model.dart';
+import 'package:tennis_ref/providers/jugador_provider.dart';
 import 'package:tennis_ref/providers/partido_provider.dart';
 import 'package:tennis_ref/providers/tema_provider.dart';
-import 'package:tennis_ref/services/jugador_service.dart';
-import 'package:tennis_ref/services/partido_service.dart';
-import 'package:tennis_ref/services/theme_config_service.dart';
 
 class HistorialSplash extends StatefulWidget {
   const HistorialSplash({super.key});
@@ -39,7 +37,7 @@ class _HistorialSplashState extends State<HistorialSplash> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            CircularProgressIndicator(),
+            Image.asset('assets/gif/Tennis_Ball.gif'),
             SizedBox(height: 20),
             Text("Recuperando partidos..."),
           ],
@@ -49,167 +47,140 @@ class _HistorialSplashState extends State<HistorialSplash> {
   }
 }
 
-
 class HistorialScreen extends StatelessWidget {
   const HistorialScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    PartidoProvider partidoProvider = Provider.of<PartidoProvider>(context);
-    List<Partido> partidos = partidoProvider.partidosHistorial;
-    TemaConfig tema = Provider.of<TemaProvider>(context).temaMarcador;
+    final partidoProvider = Provider.of<PartidoProvider>(context);
+    final jugadorProvider = Provider.of<JugadorProvider>(context);
+    final tema = Provider.of<TemaProvider>(context).temaMarcador;
+    final partidos = partidoProvider.partidosHistorial;
+
     return Scaffold(
       backgroundColor: Color(Utils.parseHex(tema.primaryColor)),
-      body: Padding(
-        padding: EdgeInsets.all(30),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text('Historial de Partidos',
-                style: TextStyle(
-                  color: Color(Utils.parseHex(tema.textColor)),
-                  fontSize: 22,
-                  fontWeight: FontWeight.bold
-                )),
-                GestureDetector(
-                  onTap: (){
-                    context.go('/');
-                  }, 
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: Color(Utils.parseHex(tema.buttonColor)),
-                      borderRadius: BorderRadius.all(Radius.circular(tema.borderRadius.toDouble()))
-                    ),
-                  padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-                  child: Text('< REGRESAR')
-                  ),
-                )
-              ],
-            ),
-            SizedBox(height: 20,),
-            Container(
-              padding: EdgeInsets.all(12),
-              decoration: BoxDecoration(
-                color: Color(Utils.parseHex(tema.neonColor)),
+      appBar: AppBar(
+        backgroundColor: Color(Utils.parseHex(tema.primaryColor)),
+        elevation: 0,
+        automaticallyImplyLeading: false,
+        title: partidoProvider.isSearching
+            ? TextField(
+                autofocus: true,
+                style: const TextStyle(color: Colors.white),
+                decoration: const InputDecoration(
+                  hintText: "Buscar competición...",
+                  hintStyle: TextStyle(color: Colors.white54),
+                  border: InputBorder.none,
                 ),
-                child: Row(
-                  children: [
-                    headerCell('Fecha', Color(Utils.parseHex(tema.buttonColor))),
-                    headerCell('Foto',  Color(Utils.parseHex(tema.buttonColor))),
-                    headerCell('Ganador',  Color(Utils.parseHex(tema.buttonColor))),
-                    headerCell('Resultado', Color(Utils.parseHex(tema.buttonColor))),
-                  ],
+                onChanged: (value) => partidoProvider.getAllPatidos(query: value),
+              )
+            : Text("Historial", style: TextStyle(color: Color(Utils.parseHex(tema.textColor)))),
+        actions: [
+          IconButton(
+            icon: Icon(
+                  partidoProvider.isSearching ? Icons.close : Icons.search,
+                  color: Color(Utils.parseHex(tema.neonColor))
                 ),
-              ),
-            Expanded(
-              child: ListView.builder(
-                itemCount: partidos.length,
-                itemBuilder: (context, index) {
-                  final partido = partidos[index];
-                  
-                  Jugador? ganador;
-                  try {
-                    ganador = Jugador.fromJson({
-    "id": "0f3a8c21-4e6b-4b9a-8c1d-9e2a1b3c0001",
-    "nombre_completo": "Carlos Alcaraz",
-    "pais": "España",
-    "bandera": "ES",
-    "fecha_nacimiento": "2003-05-05",
-    "ranking_atp": 2,
-    "mejor_ranking": 1,
-    "mano_dominante": "D",
-    "foto": "https://api-tenis.duckdns.org/media/jugadores/default.png",
-    "creacion": "2026-01-30T13:15:27.227324Z",
-    "actualizacion": "2026-01-30T13:15:27.227330Z"
-});
-                  } catch (e) {
-                    ganador = null;
-                  }
-
-                  if (ganador == null) {
-                    return const SizedBox.shrink();
-                  }
-
-                  return Container(
-                    padding: const EdgeInsets.all(12),
-                    decoration: BoxDecoration(
-                      color: Color(Utils.parseHex(tema.primaryColor)),
-                      borderRadius: BorderRadius.circular(
-                        tema.borderRadius.toDouble(),
-                      ),
-                    ),
-                    child: Row(
-                      children: [
-                        Text(
-                          partido.fechaIniciado.toString(),
-                          style: TextStyle(
-                            color: Colors.white,
-                          ),
-                        ),
-                        jugador(
-                          ganador,
-                          Color(Utils.parseHex(tema!.neonColor)),
-                        ),
-                        resultado(
-                          ganador,
-                          partido,
-                          tema.fontFamily,
-                          Color(Utils.parseHex(tema!.neonColor)),
-                          0,
-                        ),
-                        const Text(' | '),
-                        resultado(
-                          ganador,
-                          partido,
-                          tema.fontFamily,
-                          Color(Utils.parseHex(tema!.neonColor)),
-                          1,
-                        ),
-                        const Text(' | '),
-                        resultado(
-                          ganador,
-                          partido,
-                          tema.fontFamily,
-                          Color(Utils.parseHex(tema!.neonColor)),
-                          2,
-                        ),
-                      ],
-                    ),
-                  );
-                },
-              ),
+            onPressed: () => partidoProvider.setSearching(!partidoProvider.isSearching),
+          ),
+          IconButton(
+            onPressed: () => context.go('/'),
+            icon: Icon(
+              Icons.arrow_back_ios_new,
+              color: Color(Utils.parseHex(tema.neonColor))
             )
+          ),
+          SizedBox(width: 20)
+        ],
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          children: [
+            _buildHeaderTable(tema),
+            Expanded(
+              child: partidoProvider.isLoading
+                ? const Center(child: CircularProgressIndicator())
+                : ListView.separated(
+                    padding: const EdgeInsets.only(top: 10),
+                    itemCount: partidos.length,
+                    separatorBuilder: (_, __) => const SizedBox(height: 8),
+                    itemBuilder: (context, index) => _buildRow(partidos[index], jugadorProvider, tema),
+                  ),
+            ),
           ],
         ),
-      ), 
+      ),
     );
   }
-}
-Widget resultado(Jugador ganador, Partido partido, String fontFamily, Color color, int numSet) {
-  return Text ((ganador.id == partido.participantes[0].id) 
-    ? '${partido.participantes[0].sets1} - ${partido.participantes[1].sets1}'
-    : '${partido.participantes[1].sets1} - ${partido.participantes[0].sets1}',
-    style: TextStyle(
-      color: color,
-      fontSize: 30
-    ),
-  );
-}
 
-Widget jugador(Jugador ganador, Color color) {
-  return  Container(
-    child:Text(
-      ganador.nombreCompleto,
-      style: TextStyle(
-        color: color,
-        fontSize: 22
+  Widget _buildRow(Partido partido, JugadorProvider jugadorProvider, TemaConfig tema) {
+    // Buscamos el nombre del ganador por ID
+    final ganador = jugadorProvider.jugadores.firstWhere(
+      (j) => j.id == partido.ganador,
+      orElse: () => Jugador(nombreCompleto: "---", pais: "", bandera: "", fechaNacimiento: DateTime.now(), rankingAtp: 0, mejorRanking: 0, manoDominante: "D", foto: "", creacion: DateTime.now(), actualizacion: DateTime.now()),
+    );
+
+    return Container(
+      padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 10),
+      decoration: BoxDecoration(
+        color: Colors.white.withOpacity(0.05),
+        borderRadius: BorderRadius.circular(10),
       ),
-    ),
-  );
+      child: Row(
+        children: [
+          headerCell(Utils.formatFechaString(partido.fechaIniciado ?? ""), Colors.white70),
+          Expanded(
+            flex: 2,
+            child: Column(
+              children: [
+                Text(partido.competicion, style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 12)),
+                Text(Utils.conversorFase(partido.fase), style: TextStyle(color: Color(Utils.parseHex(tema.neonColor)), fontSize: 10)),
+              ],
+            ),
+          ),
+          headerCell(ganador.nombreCompleto, Color(Utils.parseHex(tema.neonColor))),
+          Expanded(flex: 2, child: _buildPuntosSets(partido, tema)),
+        ],
+      ),
+    );
+  }
 
+  Widget _buildPuntosSets(Partido partido, TemaConfig tema) {
+    if (partido.participantes.length < 2) return const Text("-");
+    final p1 = partido.participantes[0];
+    final p2 = partido.participantes[1];
+
+    String setStr(int s1, int s2) => s1 == 0 && s2 == 0 ? "" : "$s1-$s2";
+    List<String> scores = [];
+    if (setStr(p1.sets1, p2.sets1).isNotEmpty) scores.add(setStr(p1.sets1, p2.sets1));
+    if (setStr(p1.sets2, p2.sets2).isNotEmpty) scores.add(setStr(p1.sets2, p2.sets2));
+    if (setStr(p1.sets3, p2.sets3).isNotEmpty) scores.add(setStr(p1.sets3, p2.sets3));
+
+    return Text(
+      scores.join(" / "),
+      textAlign: TextAlign.center,
+      style: GoogleFonts.getFont(tema.fontFamily, color: Colors.white, fontWeight: FontWeight.bold, fontSize: 14),
+    );
+  }
+
+  Widget _buildHeaderTable(TemaConfig tema) {
+    return Container(
+      padding: const EdgeInsets.all(15),
+      decoration: BoxDecoration(
+        color: Color(Utils.parseHex(tema.buttonColor)),
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(10)),
+      ),
+      child: Row(
+        children: [
+          headerCell('Fecha', Color(Utils.parseHex(tema.textColor))),
+          headerCell('Torneo', Color(Utils.parseHex(tema.textColor))),
+          headerCell('Ganador', Color(Utils.parseHex(tema.textColor))),
+          headerCell('Resultado', Color(Utils.parseHex(tema.textColor))),
+        ],
+      ),
+    );
+  }
 }
 
 Widget headerCell(String texto, Color color){
@@ -217,11 +188,12 @@ Widget headerCell(String texto, Color color){
     flex: 2,
     child: Text(
       texto,
+      textAlign: TextAlign.center,
       style: TextStyle(
         color: color,
+        fontSize: 14,
         fontWeight: FontWeight.bold
       ),
     )
   );
 }
-

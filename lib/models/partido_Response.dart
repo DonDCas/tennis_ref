@@ -6,7 +6,7 @@ import 'dart:convert';
 
 import 'package:tennis_ref/models/partido_model.dart';
 
-PartidoResponse partidoResponseFromJson(String str, Map<String, String> queryParameters) => PartidoResponse.fromJson(json.decode(str));
+PartidoResponse partidoResponseFromJson(String str) => PartidoResponse.fromJson(json.decode(str));
 
 String partidoResponseToJson(PartidoResponse data) => json.encode(data.toJson());
 

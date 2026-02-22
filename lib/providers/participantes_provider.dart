@@ -40,46 +40,72 @@ class ParticipanteProvider extends ChangeNotifier{
   
   addParticipante(String jugadorId, bool es_jugador1, String partidoId) async {
     if (!await AuthService().estaLogueado()) return null;
+    
     final pathFinal = "$_apiPath/$partidoId/add-jugador/";
     final uri = Uri.https(_urlBase, pathFinal); 
-    print(uri);
     final token = await AuthService().getAccessToken();
 
     try {
-      var request = http.MultipartRequest('POST', uri);
+      // CAMBIO CLAVE: Usamos un post normal con JSON
+      final response = await http.post(
+        uri,
+        headers: {
+          'Authorization': 'Bearer $token',
+          'Content-Type': 'application/json', // OBLIGATORIO para Django
+        },
+        body: jsonEncode({
+          'jugador_id': jugadorId,
+          'es_jugador1': es_jugador1, // Pasamos el bool real, no un String
+          // Los puntos y sets no los envíes, Django pondrá 0 por defecto
+        }),
+      );
 
-      request.headers.addAll({
-        'Authorization': 'Bearer $token',
-      });
-
-      request.fields['jugador_id'] = jugadorId;
-      request.fields['es_jugador1'] = es_jugador1.toString();
-      request.fields['sets_1'] = "0";
-      request.fields['sets_2'] = "0";
-      request.fields['sets_3'] = "0";
-      request.fields['saque'] = "false";
-    
-
-      var response = await post(uri,body:request);
+      print("Status: ${response.statusCode}");
+      print("Body: ${response.body}");
 
       if (response.statusCode == 401) {
-        bool refrescando = await AuthService().refreshToken();
-        if (refrescando) return await addParticipante(jugadorId, es_jugador1, partidoId);
-        return null;
+        if (await AuthService().refreshToken()) {
+          return await addParticipante(jugadorId, es_jugador1, partidoId);
+        }
       }
 
       if (response.statusCode == 201 || response.statusCode == 200) {
-        
+        print("¡Éxito!");
         notifyListeners();
-        return ;
       } else {
         print("Error del servidor: ${response.body}");
-        return null;
       }
 
     } catch (e) {
       print("Error fatal: $e");
-      return null;
+    }
+  }
+
+
+  //PATCH
+  Future<void> patchParticipante(Participante p) async {
+    final token = await AuthService().getAccessToken();
+    final uri = Uri.https(_urlBase, '$_apiPath${p.id}/'); 
+
+    try {
+      final response = await http.patch(
+        uri,
+        headers: {
+          'Authorization': 'Bearer $token',
+          'Content-Type': 'application/json',
+        },
+        body: jsonEncode(p.toJson()),
+      );
+
+      if (response.statusCode == 401) {
+        if (await AuthService().refreshToken()) await patchParticipante(p);
+      }
+      
+      if (response.statusCode != 200) {
+        print("Error al actualizar participante: ${response.body}");
+      }
+    } catch (e) {
+      print("Error en PATCH participante: $e");
     }
   } 
 }

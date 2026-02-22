@@ -1,6 +1,8 @@
 import 'package:go_router/go_router.dart';
 import 'package:tennis_ref/models/partido_model.dart';
 import 'package:tennis_ref/models/theme_config_model.dart';
+import 'package:tennis_ref/presentations/screens/selec_continuar_partido.dart';
+import 'package:tennis_ref/presentations/screens/selec_partido_competi.dart';
 import 'package:tennis_ref/presentations/screens/select_jugadores_screen.dart';
 import 'package:tennis_ref/presentations/screens/final_partido.dart';
 import 'package:tennis_ref/presentations/screens/historial_screen.dart';
@@ -32,14 +34,22 @@ final appRouter = GoRouter(
       builder: (context, state) => MenuPartidoScreen(),
     ),
     GoRoute(
+      path: '/selectpartidooficial',
+      builder: (context, state) => SeleccionCompeticionScreen()
+    ),
+    GoRoute(
+      path: '/selectcontinuarpartido',
+      builder: (context, state) => SeleccionContinuarPartidoScreen()
+    ),
+    GoRoute(
       path: '/selectjugadores',
       builder: (context, state) => SelectJugadoresScreen()
-    ),GoRoute(
+    ),
+    GoRoute(
     path: '/splashCargaPartido',
     builder: (context, state) {
       // Extraemos el Map
       final extras = state.extra as Map<String, dynamic>;
-      
       return SplashCargaPartido(
           jugador1Id: extras['jugador1Id'] as String,
           jugador2Id: extras['jugador2Id'] as String,
@@ -52,10 +62,7 @@ final appRouter = GoRouter(
     ),
     GoRoute(
       path: '/finPartido',
-      builder: (context, state){
-        final partidoFinalizado = state.extra as Partido;
-        return FinalPartido(partido: partidoFinalizado,);
-      } 
+      builder: (context, state) => FinalPartido()
     ),
     GoRoute(
       path: '/historialSplash',

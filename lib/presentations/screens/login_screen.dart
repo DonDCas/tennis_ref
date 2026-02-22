@@ -28,86 +28,100 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget build(BuildContext context) {
     final temaProvider = Provider.of<TemaProvider>(context);
     TemaConfig tema = temaProvider.temaMenu!;
+    double screenWidth = MediaQuery.of(context).size.width;
+    double containerWidth = screenWidth > 600 ? 450 : screenWidth * 0.9;
     return Scaffold(
       backgroundColor: Color(Utils.parseHex(tema.primaryColor)),
       body: SafeArea(
-        child: SingleChildScrollView(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              SizedBox(
-                height: 20,
-              ),
-              Image.asset(
-                "assets/images/logo-2.png",
-                width: 200,
-              ),
-              SizedBox(height: 10,),
-              InsertText(
-                tema, 'FF', 
-                Icon(Icons.person_2, size: 18),
-                'Usuario o email',
-                false,
-                controller: userController
-              ),
-              SizedBox(height: 10,),
-              InsertText(
-                tema, 'FF', 
-                Icon(Icons.lock, size: 18),
-                'Contraseña',
-                true,
-                controller: passController
-              ),
-              SizedBox(height: 30,),
-              Row(
+        child: Center(
+          child: SingleChildScrollView(
+            child: SizedBox(
+              width: containerWidth,
+              child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  GestureDetector(
-                    onTap: () async{
-                      final user = userController.text.trim().toLowerCase();
-                      final pass = passController.text.trim();
-                      if (user.isEmpty || pass.isEmpty){
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text('Completa el inicio de sesión'))
-                        );
-                        return;
-                      }
-                      AuthService _authService = AuthService();
-                      final exitoLog = await _authService.login(user, pass);
-                      if (exitoLog){
-                        context.go("/home", extra: tema);
-                      }else{
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text('Algo esta mal en tu usuario o contraseña'))
-                        );
-                      }
-                    },
-                    child: Container(
-                      alignment: Alignment.center,
-                      width: 250,
-                      height: 75,
-                      decoration: BoxDecoration(
-                      color: Color(Utils.parseHex(tema.buttonColor)),
-                        border: Border(
-                          bottom: BorderSide(
-                            color: Colors.white,
-                            width: 5
+                  SizedBox(
+                    height: 20,
+                  ),
+                  Image.asset(
+                    "assets/images/logo-2.png",
+                    width: 200,
+                  ),
+                  SizedBox(height: 10,),
+                  AutofillGroup(
+                    child: Column(
+                      children: [
+                        InsertText(
+                          tema, 'FF', 
+                          Icon(Icons.person_2, size: 18),
+                          'Usuario o email',
+                          false,
+                          controller: userController
+                        ),
+                        SizedBox(height: 10,),
+                        InsertText(
+                          tema, 'FF', 
+                          Icon(Icons.lock, size: 18),
+                          'Contraseña',
+                          true,
+                          controller: passController,
+
+                        ),
+                      ],
+                    )
+                  ),
+                  SizedBox(height: 30,),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      GestureDetector(
+                        onTap: () async{
+                          final user = userController.text.trim().toLowerCase();
+                          final pass = passController.text.trim();
+                          if (user.isEmpty || pass.isEmpty){
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(content: Text('Completa el inicio de sesión'))
+                            );
+                            return;
+                          }
+                          AuthService _authService = AuthService();
+                          final exitoLog = await _authService.login(user, pass);
+                          if (exitoLog){
+                            context.go("/home", extra: tema);
+                          }else{
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(content: Text('Algo esta mal en tu usuario o contraseña'))
+                            );
+                          }
+                        },
+                        child: Container(
+                          alignment: Alignment.center,
+                          width: 250,
+                          height: 75,
+                          decoration: BoxDecoration(
+                          color: Color(Utils.parseHex(tema.buttonColor)),
+                            border: Border(
+                              bottom: BorderSide(
+                                color: Colors.white,
+                                width: 5
+                              )
+                            ),
+                            borderRadius: BorderRadius.all(Radius.circular(tema.borderRadius.toDouble()))
+                          ),
+                          child: Text(
+                            "Inciar Sesión",
+                            style: TextStyle(
+                              color: Color(Utils.parseHex(tema.neonColor))
+                            )
                           )
                         ),
-                        borderRadius: BorderRadius.all(Radius.circular(tema.borderRadius.toDouble()))
                       ),
-                      child: Text(
-                        "Inciar Sesión",
-                        style: TextStyle(
-                          color: Color(Utils.parseHex(tema.neonColor))
-                        )
-                      )
-                    ),
-                  ),
+                    ],
+                  )
                 ],
-              )
-            ],
-          )
+              ),
+            )
+          ),
         )
       ),
     );

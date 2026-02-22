@@ -21,7 +21,7 @@ class _SelectJugadoresScreenState extends State<SelectJugadoresScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final tema = Provider.of<TemaProvider>(context).temaMenu!;
+    final tema = Provider.of<TemaProvider>(context).temaMenu ?? Provider.of<TemaProvider>(context).temaMarcador;
     final jugadorProvider = Provider.of<JugadorProvider>(context);
     final jugadores = jugadorProvider.jugadores;
 
@@ -124,7 +124,7 @@ class _SelectJugadoresScreenState extends State<SelectJugadoresScreen> {
                       'Empezar',
                       style: TextStyle(
                         fontSize: 24,
-                        color: Color(Utils.parseHex(tema.buttonColor))
+                        color: Color(Utils.parseHex(tema.neonColor))
                       ),
                     ),
                   ),

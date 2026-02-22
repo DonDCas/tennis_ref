@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -25,7 +26,8 @@ class _CrearJugadorSheetState extends State<CrearJugadorSheet> {
   final ImagePicker _picker = ImagePicker();
   DateTime? _fechaNacimiento;
   String? _mDominante;
-  File? _image;
+  Uint8List? _webImage;
+  XFile? _imageFile;
 
 
   @override
@@ -118,8 +120,8 @@ class _CrearJugadorSheetState extends State<CrearJugadorSheet> {
                 onTap: pickImage,
                 child: CircleAvatar(
                   radius: 60,
-                  backgroundImage: _image != null ? FileImage(_image!) : null,
-                  child: _image == null
+                  backgroundImage:_webImage != null ? MemoryImage(_webImage!) : null,
+                  child:_webImage == null
                     ? Icon(Icons.camera_alt, size: 40)
                     : null,
                 ),
@@ -158,8 +160,10 @@ class _CrearJugadorSheetState extends State<CrearJugadorSheet> {
   
   void _guardar() async {
   if (!_formKey.currentState!.validate()) return;
-  if (_image == null) {
-    // Mostrar snackbar: falta la foto
+  if (_webImage == null || _imageFile == null) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text("Debes seleccionar una foto"))
+    );
     return;
   }
 
@@ -178,7 +182,9 @@ class _CrearJugadorSheetState extends State<CrearJugadorSheet> {
     );
 
     final provider = Provider.of<JugadorProvider>(context, listen: false);
-    final resultado = await provider.crearJugador(tempJugador, _image!);
+    final resultado = await provider.crearJugador(
+      tempJugador, 
+      _webImage! , _imageFile!.name);
 
     if (resultado != null) {
       Navigator.pop(context, resultado);
@@ -199,14 +205,19 @@ class _CrearJugadorSheetState extends State<CrearJugadorSheet> {
     }
   }
 
-  Future<void> pickImage() async{
+  Future<void> pickImage() async {
     final XFile? image = await _picker.pickImage(
       source: ImageSource.camera,
       imageQuality: 80,
     );
-    if (image != null){
+
+    if (image != null) {
+      // Leemos los bytes de la imagen (esto funciona en TODAS las plataformas)
+      final bytes = await image.readAsBytes();
+
       setState(() {
-        _image = File(image.path);
+        _webImage = bytes; // Guardamos los bytes para mostrar la imagen
+        _imageFile = image; // Guardamos el XFile para enviarlo luego al servidor
       });
     }
   }

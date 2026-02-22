@@ -29,9 +29,9 @@ class MenuPartidoScreen extends StatelessWidget {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     SizedBox(height: 80,),
-                    botonNavegacion('PARTIDO OFICIAL', tema, ()=> context.go('/menupartido'), Duration(milliseconds: 800)),
+                    botonNavegacion('PARTIDO OFICIAL', tema, ()=> context.go('/selectpartidooficial'), Duration(milliseconds: 800)),
                     SizedBox(height: 20,),
-                    botonNavegacion('CONTINUAR PARTIDO', tema, ()=> context.go('/home'), Duration(milliseconds: 1200)),
+                    botonNavegacion('CONTINUAR PARTIDO', tema, ()=> context.go('/selectcontinuarpartido'), Duration(milliseconds: 1200)),
                     SizedBox(height: 20,),
                     botonNavegacion('PARTIDO AMISTOSO', tema, ()=> context.go('/selectjugadores'), Duration(milliseconds: 1400)),
                     SizedBox(height: 20,),

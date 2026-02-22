@@ -1,28 +1,29 @@
-/* import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_glow/flutter_glow.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:tenis_pot3/Utils/utils.dart';
-import 'package:tenis_pot3/controller/appController.dart';
-import 'package:tenis_pot3/models/jugador_model.dart';
-import 'package:tenis_pot3/models/partido_model.dart';
-import 'package:tenis_pot3/models/theme_config_model.dart';
+import 'package:tennis_ref/Utils/utils.dart';
+import 'package:tennis_ref/controller/appController.dart';
+import 'package:tennis_ref/models/jugador_model.dart';
+import 'package:tennis_ref/models/partido_model.dart';
+import 'package:tennis_ref/models/theme_config_model.dart';
 
-class PuntuacionesWidget extends StatefulWidget {
+class PuntuacionesWidget extends StatelessWidget {
 
   final TemaConfig tema;
   final Partido partido;
   final Jugador jugador1;
   final Jugador jugador2;
+  final Participante parti1;
+  final Participante parti2;
   
 
-  const PuntuacionesWidget(this.tema, this.partido, this.jugador1, this.jugador2, {super.key});
+  PuntuacionesWidget(this.tema, this.partido, this.jugador1, this.jugador2, this.parti1, this.parti2, {super.key});
 
-  @override
-  State<PuntuacionesWidget> createState() => _PuntuacionesWidgetState();
-}
-
-class _PuntuacionesWidgetState extends State<PuntuacionesWidget> {
   final AppController appController = AppController();
+
+  List<int> get puntacionesJugador1 => [parti1.sets1, parti1.sets2, parti1.sets3];
+  List<int> get puntacionesJugador2 => [parti2.sets1, parti2.sets2, parti2.sets3];
+
   @override
   Widget build(BuildContext context) {
     return Center(
@@ -33,15 +34,15 @@ class _PuntuacionesWidgetState extends State<PuntuacionesWidget> {
       child: Container(
         padding: const EdgeInsets.all(12),
         decoration: BoxDecoration(
-          color: Color(Utils.parseHex(widget.tema.tableRowColor!)),
+          color: Color(Utils.parseHex(tema.tableRowColor!)),
           borderRadius: BorderRadius.circular(6),
           border: Border.all(
-            color: Color(Utils.parseHex(widget.tema.neonColor)),
+            color: Color(Utils.parseHex(tema.neonColor)),
             width: 1,
           ),
           boxShadow: [
             BoxShadow(
-              color: Color(Utils.parseHex(widget.tema.primaryColor)),
+              color: Color(Utils.parseHex(tema.primaryColor)),
               blurRadius: 12,
             )
           ],
@@ -49,11 +50,23 @@ class _PuntuacionesWidgetState extends State<PuntuacionesWidget> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            /* _Cabecera(widget.tema),
+            _Cabecera(tema),
             const SizedBox(height: 6),
-            _divisor(widget.tema, context),
-            _Fila(widget.tema, '${widget.jugador1!.nombre}', widget.partido.sets_e1, (widget.partido.isTieBreak!)? widget.partido.equipo1.puntos.toString() :appController.conversor(widget.partido.equipo1.puntos)),
-            _Fila(widget.tema, "${widget.jugador2!.nombre}", widget.partido.sets_e2, (widget.partido.isTieBreak!)? widget.partido.equipo2.puntos.toString() :appController.conversor(widget.partido.equipo2.puntos)), */
+            _divisor(tema, context),
+            _Fila(
+              tema, '${jugador1.nombreCompleto}', 
+              puntacionesJugador1, 
+              (partido.isTieBreak)
+                ? parti1.puntos.toString() 
+                : appController.conversor(parti1.puntos
+                )
+              ),
+            _Fila(
+              tema, "${jugador2.nombreCompleto}", 
+              puntacionesJugador2, 
+              (partido.isTieBreak)
+                ? parti2.puntos.toString() 
+                :appController.conversor(parti2.puntos)),
           ],
         ),
       ),
@@ -123,8 +136,7 @@ Widget _celda(
         child: glow
           ? GlowText(
             text,
-            style: GoogleFonts.getFont(
-              tema.fontFamily,
+            style: TextStyle(
               color: Color(Utils.parseHex(tema.textColor)),
               fontSize: 22,
               fontWeight: FontWeight.bold,
@@ -134,8 +146,7 @@ Widget _celda(
             )
           : Text(
             text,
-            style: GoogleFonts.getFont(
-              tema.fontFamily,
+            style: TextStyle(
               color: isHeader ? Color(Utils.parseHex(tema.gridColor!)) : Colors.white,
               fontSize: isHeader ? 14 : 18,
               fontWeight: isHeader ? FontWeight.w500 : FontWeight.bold,
@@ -155,8 +166,7 @@ Widget _celdaFuerte(
     child: GlowText(
       texto,
       textAlign: TextAlign.center,
-      style: GoogleFonts.getFont(
-        tema.fontFamily,
+      style: TextStyle(
         color: Color(Utils.parseHex(tema.neonColor)),
         fontSize: 28,
         fontWeight: FontWeight.bold,
@@ -173,4 +183,4 @@ Widget _divisor(TemaConfig tema, BuildContext context){
     height: 1,
     color: Color(Utils.parseHex(tema.gridColor!)),
   );
-} */
+}

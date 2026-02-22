@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:tennis_ref/providers/jugador_provider.dart';
 import 'package:tennis_ref/providers/participantes_provider.dart';
@@ -7,7 +8,14 @@ import 'package:tennis_ref/providers/tema_provider.dart';
 import 'package:tennis_ref/routes/app_routes.dart';
 import 'package:tennis_ref/theme/app_theme.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  
+  // Forzar horizontal en dispositivos móviles
+  await SystemChrome.setPreferredOrientations([
+    DeviceOrientation.landscapeLeft,
+    DeviceOrientation.landscapeRight,
+  ]);
   runApp(AppState());
 }
 
